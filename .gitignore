@@ -3,4 +3,6 @@ dist
 logs
 *.log
 .vscode/*
+dist/*
+node_modules/*
 

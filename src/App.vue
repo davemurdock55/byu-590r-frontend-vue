@@ -1,18 +1,19 @@
-<script  lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import LoginView from './views/login/LoginView.vue'
+<script lang="ts">
+import { RouterLink, RouterView } from "vue-router";
+import LoginView from "./views/login/LoginView.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     LoginView,
     RouterLink,
-    RouterView
+    RouterView,
   },
   data: function () {
+    // This is where you put all of your variables that you want to be accessible in the component
     return {
-      isAuthenticated: false
-    }
+      isAuthenticated: false,
+    };
   },
   created() {
     if (this.isAuthenticated) {
@@ -24,11 +25,11 @@ export default {
       this.isAuthenticated = false;
     },
     checkAuth(auth) {
-      console.log('Authenticated!', auth)
+      console.log("Authenticated!", auth);
       this.isAuthenticated = auth;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <template>
@@ -38,7 +39,7 @@ export default {
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </div>
-      <button @click="logout();">Logout</button>
+      <button @click="logout()">Logout</button>
     </header>
 
     <RouterView />
