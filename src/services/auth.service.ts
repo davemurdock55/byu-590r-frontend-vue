@@ -7,8 +7,8 @@ class AuthService {
     formData.append("email", user.email);
     formData.append("password", user.password);
     return axios.post(API_URL + "login", formData).then((response) => {
-      if (response.data.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data.data));
+      if (response.data.result.token) {
+        localStorage.setItem("user", JSON.stringify(response.data.result));
       }
 
       return response.data;

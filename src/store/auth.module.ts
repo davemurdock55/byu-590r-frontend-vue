@@ -1,5 +1,6 @@
 import authService from "../services/auth.service";
 
+// @ts-ignore
 const user = JSON.parse(localStorage.getItem("user"));
 const initialState = user ? { status: { loggedIn: true }, user } : { status: { loggedIn: false }, user: null };
 
@@ -69,6 +70,9 @@ export const auth = {
     },
     forgotPasswordSuccess(state) {
       state.status.loggedIn = false;
+    },
+    uploadAvatarSuccess(state, avatar) {
+      state.user.avatar = avatar;
     },
   },
 };
