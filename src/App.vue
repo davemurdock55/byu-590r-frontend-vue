@@ -26,7 +26,7 @@ export default {
       },
       profilePictureImage: "",
       emailOfVerification: "",
-      changeProfilePicDialog: false,
+      editProfilePicDialog: false,
       switchModel: false,
     };
   },
@@ -146,17 +146,17 @@ export default {
 
 <template>
   <v-app :theme="theme">
-    <v-dialog v-model="changeProfilePicDialog" max-width="600">
+    <v-dialog v-model="editProfilePicDialog" max-width="600">
       <v-card rounded="lg" :loading="profileIsUploading" accent="blue">
         <template v-slot:loader="{ isActive }">
-          <v-progress-linear :active="isActive" color="blue" height="2" indeterminate></v-progress-linear>
+          <v-progress-linear :active="isActive" color="blue" height="3" indeterminate></v-progress-linear>
         </template>
         <v-card-title class="px-2 d-flex justify-space-between align-center">
           <div class="pl-3 d-flex">
             <v-icon>mdi-account-circle-outline</v-icon>
             <div class="text-h5 text-medium-emphasis ps-2">Edit Profile Picture</div>
           </div>
-          <v-btn icon="mdi-close" variant="text" @click="isActive.value = false"></v-btn>
+          <v-btn icon="mdi-close" variant="text" @click="editProfilePicDialog = false"></v-btn>
         </v-card-title>
         <v-card-text>
           <div class="justify-center gap-5 d-flex flex-column">
@@ -188,14 +188,14 @@ export default {
                 :text="cursor"
               ></v-file-input>
               <!-- <v-btn icon="mdi-trash-can-outline" @click="removeAvatar()" class="mt-3" variant="text"></v-btn> -->
-              <v-btn :disabled="!avatarURL" prepend-icon="mdi-close-box" @click="removeAvatar()" class="mt-3" variant="text" color="error"> Clear Profile </v-btn>
+              <v-btn :disabled="!avatarURL" prepend-icon="mdi-close-box" @click="removeAvatar()" class="mt-3" variant="text" color="error"> Clear Profile Picture</v-btn>
             </div>
           </div>
         </v-card-text>
         <v-card-actions class="px-5 py-4 ga-2">
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="changeProfilePicDialog = false" size="large">Close</v-btn>
-          <v-btn @click="changeProfilePicDialog = false" :disabled="!avatarURL" variant="flat" color="blue" size="large" type="submit">Done</v-btn>
+          <v-btn variant="text" @click="editProfilePicDialog = false" size="large">Close</v-btn>
+          <v-btn @click="editProfilePicDialog = false" :disabled="!avatarURL" variant="flat" color="blue" size="large" type="submit">Done</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -209,7 +209,10 @@ export default {
           <template v-slot:activator="{ props }">
             <v-btn icon v-bind="props">
               <v-avatar color="info" :loading="profileIsUploading">
-                <span v-if="!avatarURL" class="text-h6">{{ initials }}</span>
+                <span v-if="!avatarURL" class="text-h6"
+                  >{{ initials }}
+                  <!-- <v-icon>mdi-account-circle-outline</v-icon> -->
+                </span>
                 <v-img v-else-if="avatarURL" :src="avatarURL" :loading="profileIsUploading"></v-img>
               </v-avatar>
             </v-btn>
@@ -227,7 +230,7 @@ export default {
                 </p>
                 <!-- <v-switch v-model="switchModel" :label="`change theme`" true-icon="mdi-weather-night" false-icon="mdi-weather-sunny" inset color="info" flat></v-switch> -->
                 <v-divider class="my-3"></v-divider>
-                <v-btn block variant="text" @click="changeProfilePicDialog = true" rounded="lg">Edit Profile Picture</v-btn>
+                <v-btn block variant="text" @click="editProfilePicDialog = true" rounded="lg">Edit Profile Picture</v-btn>
                 <v-divider class="my-3"></v-divider>
                 <!-- <v-btn variant="text" rounded> Toggle Theme </v-btn> -->
                 <v-btn block :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'" @click="changeTheme" variant="text" rounded="lg">Toggle Theme</v-btn>
