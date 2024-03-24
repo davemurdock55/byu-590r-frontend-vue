@@ -171,17 +171,15 @@
               <v-rating v-model="newBook.rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments></v-rating>
             </div>
 
-            <div
-              v-if="newBook.cover == null || newBook.cover == undefined || newBook.cover == '' || newBook == null || newBook == undefined || newBook == {}"
-              class="upload_book_area pa-6"
-              @click="$refs.bookCoverUpload.click()"
-            >
+            <div v-if="newBook.cover && newBook.cover != null && newBook.cover != undefined && newBook.cover_display != null && newBook.cover_display != undefined">
+              <v-img height="300" :src="newBook.cover_display"></v-img>
+            </div>
+
+            <div v-else class="upload_book_area pa-6" @click="$refs.bookCoverUpload.click()">
               <v-text class="justify-center d-flex text-grey-lighten-1" color="grey-lighten-1">Upload Book Cover</v-text>
               <v-icon icon="mdi-image-area" color="grey-lighten-1" size="x-large"></v-icon>
             </div>
-            <div v-else-if="newBook.cover">
-              <v-img height="300" :src="newBook.cover"></v-img>
-            </div>
+
             <div class="justify-center mb-0 d-flex flex-column">
               <v-file-input
                 prepend-icon="mdi-image-area"
@@ -197,7 +195,7 @@
               ></v-file-input>
 
               <v-responsive class="mx-auto" min-width="300">
-                <v-btn :disabled="!newBook.cover" prepend-icon="mdi-close-box" @click="removeBookCover()" class="mt-3" variant="text" color="red" :max-width="300">Remove Book Cover</v-btn>
+                <v-btn :disabled="!newBook.cover" prepend-icon="mdi-close-box" @click="newBook.cover = null" class="mt-3" variant="text" color="red" :max-width="300">Remove Book Cover</v-btn>
                 <v-text-field label="Author" variant="underlined" v-model="newBook.author" :rules="requiredRule" color="blue"></v-text-field>
               </v-responsive>
               <v-textarea label="Description" variant="underlined" v-model="newBook.description" color="blue" auto-grow :rows="3"></v-textarea>

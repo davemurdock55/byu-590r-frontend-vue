@@ -97,7 +97,6 @@ export const books = {
       return state.booksList;
     },
     getBookStateIndexByBookID: (state) => (bookID) => {
-      console.log("getBookStateIndexByBookID bookID received: ", bookID);
       return state.booksList.findIndex((book) => {
         return book.id === bookID;
       });

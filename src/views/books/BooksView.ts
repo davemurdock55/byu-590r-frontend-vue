@@ -26,6 +26,7 @@ export default {
         description: "",
         rating: 0,
         date_published: "",
+        cover_display: "",
       },
 
       addBookDialog: false,
@@ -85,13 +86,13 @@ export default {
         description: "",
         rating: 0,
         date_published: "",
+        cover_display: "",
       };
       this.addBookDialog = true;
     },
     onNewBookImageChange(e) {
       this.addBookDialogIsLoading = true;
 
-      this.newBook.cover = null;
       var image = e.target.files || e.dataTransfer.files;
 
       if (!image.length) {
@@ -100,8 +101,23 @@ export default {
       }
 
       this.newBook.cover = image[0];
-      this.addBookDialogIsLoading = false;
+
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        // Set newBook.cover to the data URL
+        if (event.target) {
+          this.newBook.cover_display = event.target.result;
+        } else {
+          this.newBook.cover_display = null;
+        }
+        this.addBookDialogIsLoading = false;
+      };
+
+      // Read the uploaded file as a data URL
+      reader.readAsDataURL(image[0]);
     },
+
     addBook() {
       this.addBookDialogIsLoading = true;
       this.errorMessage = null;
@@ -118,6 +134,7 @@ export default {
             description: "",
             rating: 0,
             date_published: "",
+            cover_display: "",
           };
           this.addBookDialogIsLoading = false;
         })
@@ -131,6 +148,7 @@ export default {
             description: "",
             rating: 0,
             date_published: "",
+            cover_display: "",
           };
           this.addBookDialogIsLoading = false;
         });
@@ -145,6 +163,7 @@ export default {
         description: "",
         rating: 0,
         date_published: "",
+        cover_display: "",
       };
     },
 
