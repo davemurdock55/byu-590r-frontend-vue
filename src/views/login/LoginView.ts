@@ -109,16 +109,16 @@ export default {
     },
   },
   mounted() {
-    console.log("Login mounted");
+    // console.log("Login mounted");
   },
   beforeCreate() {
-    console.log("Login beforeCreate");
+    // console.log("Login beforeCreate");
   },
   beforeMount() {
-    console.log("Login beforeMount");
+    // console.log("Login beforeMount");
   },
   created() {
-    console.log("Login created");
-    console.log(this.isAuthenticated);
+    // console.log("Login created");
+    // console.log(this.isAuthenticated);
   },
 };

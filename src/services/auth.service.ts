@@ -29,7 +29,7 @@ class AuthService {
   }
 
   forgotPassword(forgotEmail) {
-    console.log("inside service -- ", forgotEmail);
+    // console.log("inside service -- ", forgotEmail);
     let formData = new FormData();
     formData.append("email", forgotEmail);
     return axios.post(API_URL + "forgot_password", formData).then((response) => {

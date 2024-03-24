@@ -48,7 +48,7 @@
     <v-card rounded="xl" class="pa-5">
       <v-form v-model="isLoginFormValid" @submit.prevent="submitLogin">
         <div className="inside-form-container">
-          <h2 className="login-header">Welcome to My App</h2>
+          <h2 className="login-header">Welcome to Bookhaven</h2>
           <div className="form-inputs">
             <v-text-field v-model="email" :rules="emailRules" label="Email" color="blue" variant="outlined" rounded="lg" required></v-text-field>
             <v-text-field @keyup.enter="submitLogin()" v-model="password" :rules="passwordRules" label="Password" type="password" color="blue" variant="outlined" rounded="lg" required></v-text-field>

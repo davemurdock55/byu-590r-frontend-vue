@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from "vue-router";
 import LoginView from "./views/login/LoginView.vue";
 import { mapState } from "vuex";
 import { ref } from "vue";
+import Navbar from "./components/partials/navbar/Navbar.vue";
 
 export default {
   data: function () {
@@ -40,6 +41,7 @@ export default {
   },
   name: "App",
   components: {
+    // Navbar,
     LoginView,
     RouterLink,
     RouterView,
@@ -188,7 +190,7 @@ export default {
                 :text="cursor"
               ></v-file-input>
               <!-- <v-btn icon="mdi-trash-can-outline" @click="removeAvatar()" class="mt-3" variant="text"></v-btn> -->
-              <v-btn :disabled="!avatarURL" prepend-icon="mdi-close-box" @click="removeAvatar()" class="mt-3" variant="text" color="error"> Clear Profile Picture</v-btn>
+              <v-btn :disabled="!avatarURL" prepend-icon="mdi-close-box" @click="removeAvatar()" class="mt-3" variant="text" color="red"> Clear Profile Picture</v-btn>
             </div>
           </div>
         </v-card-text>
@@ -199,11 +201,13 @@ export default {
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-app-bar :title="authUser.name === undefined ? '' : title" v-if="isAuthenticated" class="ga-3" gap="3">
+    <v-app-bar :title="authUser.name === undefined ? '' : title" v-if="isAuthenticated" class="text-blue ga-3" gap="3">
       <v-spacer></v-spacer>
       <div class="flex-row d-flex ga-3 align-center pa-4">
-        <v-btn to="/" default>Home</v-btn>
-        <v-btn to="about">About</v-btn>
+        <v-btn to="/" flat color="blue" class="font-weight-medium" :ripple="false" default>Home</v-btn>
+        <v-btn to="books" flat color="blue" class="font-weight-medium" :ripple="false">Books</v-btn>
+        <v-btn to="reading_list" flat class="font-weight-medium" :ripple="false">My Booklist</v-btn>
+        <!-- <v-btn to="about" flat class="font-weight-medium" :ripple="false">About</v-btn> -->
 
         <v-menu open-on-hover min-width="200px" rounded>
           <template v-slot:activator="{ props }">
@@ -245,6 +249,7 @@ export default {
     <v-main>
       <v-container class="pa-0" fluid>
         <div v-if="isAuthenticated" class="app-content">
+          <Navbar />
           <RouterView />
         </div>
         <LoginView v-else :is-authenticated="isAuthenticated" @authenticate="checkAuth($event)" />
