@@ -96,14 +96,14 @@ export default {
       };
 
       this.$store.dispatch("auth/register", register).then(
-        () => {
+        (response) => {
           alert("success!");
           this.registerFormIsLoading = false;
           this.registerDialog = false;
         },
         (error) => {
           this.registerFormIsLoading = false;
-          alert("error!");
+          alert(error);
         }
       );
     },

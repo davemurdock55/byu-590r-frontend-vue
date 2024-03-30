@@ -20,22 +20,12 @@
             <v-text-field v-model="register.name" :rules="nameRules" label="Name" color="blue" variant="outlined" rounded="lg" required></v-text-field>
             <v-text-field v-model="register.email" :rules="emailRules" label="Email" color="blue" variant="outlined" rounded="lg" required></v-text-field>
             <v-text-field v-model="register.password" :rules="passwordRules" label="Password" type="password" color="blue" variant="outlined" rounded="lg" required></v-text-field>
-            <v-text-field
-              @keyup.enter="submitRegister()"
-              v-model="register.c_password"
-              :rules="passwordRules"
-              label="Confirm Password"
-              type="password"
-              color="blue"
-              variant="outlined"
-              rounded="lg"
-              required
-            ></v-text-field>
+            <v-text-field v-model="register.c_password" :rules="passwordRules" label="Confirm Password" type="password" color="blue" variant="outlined" rounded="lg" required></v-text-field>
             <small>*indicates required field</small>
             <v-card-actions class="pa-0">
               <v-spacer></v-spacer>
               <v-btn variant="text" @click="registerDialog = false" size="large">Close</v-btn>
-              <v-btn @click="submitRegister()" variant="flat" color="blue" :disabled="!isRegisterFormValid" :loading="registerFormIsLoading" size="large" type="submit">Sign Up</v-btn>
+              <v-btn variant="flat" color="blue" :disabled="!isRegisterFormValid" :loading="registerFormIsLoading" size="large" type="submit">Sign Up</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-form>
