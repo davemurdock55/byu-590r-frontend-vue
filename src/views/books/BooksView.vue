@@ -28,8 +28,8 @@
           <p class="text-grey-lighten-1" v-if="selectedBook.date_published">{{ formattedDate }}</p>
 
           <div class="justify-center mb-2 text-center d-flex align-center">
-            <p class="text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.rating }}</p>
-            <v-rating v-model="selectedBook.rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments></v-rating>
+            <p class="text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
+            <v-rating v-model="selectedBook.overall_rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments></v-rating>
           </div>
 
           <div
@@ -55,7 +55,8 @@
               color="blue"
               class="d-none"
             ></v-file-input>
-            <p class="text-medium-emphasis">{{ selectedBook.author }}</p>
+            <p class="text-medium-emphasis">{{ selectedBook.author ? selectedBook.author.name : "Unknown Author" }}</p>
+            <!-- <p class="text-medium-emphasis">{{ selectedBook.author.name }}</p> -->
             <!-- <v-btn icon="mdi-trash-can-outline" @click="removeAvatar()" class="mt-3" variant="text"></v-btn> -->
             <!-- <v-btn :disabled="!avatarURL" prepend-icon="mdi-close-box" @click="removeAvatar()" class="mt-3" variant="text" color="red"> Clear Profile Picture</v-btn> -->
           </div>
@@ -133,7 +134,7 @@
         <v-card-actions class="px-5 py-4 ga-2">
           <v-spacer></v-spacer>
           <v-btn variant="text" @click="closeEditDialog()" size="large">Close</v-btn>
-          <v-btn @click="editBook()" :disabled="!isEditFormValid" variant="flat" color="blue" size="large" type="submit">Save</v-btn>
+          <v-btn @click="editBook()" :disabled="!isEditFormValid | editBookDialogIsLoading" :loading="editBookDialogIsLoading" variant="flat" color="blue" size="large" type="submit">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -206,7 +207,7 @@
         <v-card-actions class="px-5 py-4 ga-2">
           <v-spacer></v-spacer>
           <v-btn variant="text" @click="closeAddDialog()" size="large">Close</v-btn>
-          <v-btn @click="addBook()" :disabled="!isAddFormValid" variant="flat" color="blue" size="large" type="submit">Add</v-btn>
+          <v-btn @click="addBook()" :disabled="!isAddFormValid | addBookDialogIsLoading" :loading="addBookDialogIsLoading" variant="flat" color="blue" size="large" type="submit">Add</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -246,14 +247,14 @@
 
   <!-- Book List -->
   <v-sheet class="justify-center d-flex flex-column align-center">
-    <v-sheet class="flex-wrap d-flex ga-10 pa-5">
+    <v-sheet class="flex-wrap px-10 py-5 d-flex ga-10">
       <v-hover v-for="book in booksList">
         <template v-slot:default="{ isHovering, props }">
           <v-card v-if="!isLoadingBooks" @click="openBookDialog(book)" v-bind="props" :color="isHovering ? 'blue' : undefined" variant="outlined" hover :width="240">
             <v-img class="text-white" height="300" :src="book.cover" position="top" cover></v-img>
             <div class="justify-center pt-2 text-center d-flex align-center">
-              <p class="text-h6 font-weight-light text-yellow-darken-2">{{ book.rating }}</p>
-              <v-rating v-model="book.rating" active-color="yellow-darken-2" color="yellow-darken-2" density="compact" readonly hover half-increments></v-rating>
+              <p class="text-h6 font-weight-light text-yellow-darken-2">{{ book.overall_rating }}</p>
+              <v-rating v-model="book.overall_rating" active-color="yellow-darken-2" color="yellow-darken-2" density="compact" readonly hover half-increments></v-rating>
             </div>
 
             <v-card-item class="text-center pa-0">
@@ -263,7 +264,7 @@
               <!-- <v-card-subtitle>{{ book.author.name }}</v-card-subtitle> -->
             </v-card-item>
 
-            <v-card-text class="text-center text-medium-emphasis">{{ book.author }}</v-card-text>
+            <v-card-text class="text-center text-medium-emphasis">{{ book.author.name }}</v-card-text>
           </v-card>
         </template>
       </v-hover>
@@ -271,11 +272,11 @@
   >
 
   <!-- Error Snackbar -->
-  <v-snackbar color="red" v-model="snackbar">
+  <v-snackbar :color="snackbarColor" v-model="snackbar">
     <!-- <template v-slot:activator="{ props }"> </template> -->
-    <p class="text-body-1">{{ errorMessage }}</p>
+    <p class="text-body-1">{{ snackBarMessage }}</p>
     <template v-slot:actions>
-      <v-btn variant="text" @click="closeErrorSnackbar">CLOSE</v-btn>
+      <v-btn variant="text" @click="closeSnackbar">CLOSE</v-btn>
     </template>
   </v-snackbar>
 </template>

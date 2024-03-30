@@ -89,6 +89,7 @@ export default {
   updated() {
     if (this.isAuthenticated) {
       this.$router.push({ name: "home" });
+      console.log(this.$store.state.user);
     }
   },
   methods: {

@@ -7,7 +7,8 @@ export default {
     return {
       isLoadingBooks: true,
       snackbar: false,
-      errorMessage: null,
+      snackbarColor: "",
+      snackBarMessage: null,
 
       // rating: 0,
       requiredRule: [(value) => !!value || "Required"],
@@ -117,7 +118,6 @@ export default {
       // Read the uploaded file as a data URL
       reader.readAsDataURL(image[0]);
     },
-
     addBook() {
       this.addBookDialogIsLoading = true;
       this.errorMessage = null;
@@ -137,9 +137,10 @@ export default {
             cover_display: "",
           };
           this.addBookDialogIsLoading = false;
+          this.openSnackbar("Book Added", "success");
         })
         .catch((error) => {
-          this.openErrorSnackbar("Adding book failed. " + error.response.data.message);
+          this.openSnackbar("Adding book failed. " + error.response.data.message, "red");
           this.newBook = {
             title: "",
             series: "",
@@ -200,11 +201,12 @@ export default {
       this.$store
         .dispatch("books/updateBookCover", this.editingBook)
         .then(() => {
+          this.openSnackbar("Cover Updated", "success");
           this.bookDialogIsLoading = false;
           this.editBookDialogIsLoading = false;
         })
         .catch((error) => {
-          this.openErrorSnackbar("Book Cover Upload failed. " + error.response.data.message);
+          this.openSnackbar("Book Cover Upload failed. " + error.response.data.message, "red");
           this.editingBook.cover = backupCover;
           this.bookDialogIsLoading = false;
           this.editBookDialogIsLoading = false;
@@ -239,9 +241,9 @@ export default {
         .catch((error) => {
           console.log(error);
           if (error != undefined) {
-            this.openErrorSnackbar("Book Cover Upload failed. " + error.response.data.message);
+            this.openSnackbar("Failed to remove book cover. " + error.response.data.message, "red");
           } else {
-            this.openErrorSnackbar(error);
+            this.openSnackbar(error, "red");
           }
 
           this.editingBook.cover = backupCover;
@@ -261,10 +263,11 @@ export default {
         .then(() => {
           this.closeEditDialog();
           this.editingBook = {};
+          this.openSnackbar("Edits Saved", "success");
           this.editBookDialogIsLoading = false;
         })
         .catch((error) => {
-          this.openErrorSnackbar("Editing failed. " + error.response.data.message);
+          this.openSnackbar("Editing failed. " + error.response.data.message, "red");
           this.editBookDialogIsLoading = false;
         });
 
@@ -288,11 +291,12 @@ export default {
         .dispatch("books/deleteBook", this.selectedDeleteBook)
         .then(() => {
           this.selectedDeleteBook = {};
+          this.openSnackbar("Book Deleted", "red");
           this.deleteBookDialogIsLoading = false;
           this.selectedDeleteBook = false;
         })
         .catch((error) => {
-          this.openErrorSnackbar("Deleting failed. " + error.response.data.message);
+          this.openSnackbar("Deleting failed. " + error.response.data.message, "red");
           this.deleteBookDialogIsLoading = false;
         });
 
@@ -303,13 +307,14 @@ export default {
       this.deleteBookDialog = false;
     },
 
-    openErrorSnackbar(errorMessage) {
+    openSnackbar(message, color) {
       this.snackbar = true;
-      this.errorMessage = errorMessage;
+      this.snackBarMessage = message;
+      this.snackbarColor = color;
     },
-    closeErrorSnackbar() {
+    closeSnackbar() {
       this.snackbar = false;
-      this.errorMessage = null;
+      this.snackBarMessage = null;
     },
   },
 
@@ -319,6 +324,12 @@ export default {
       this.getBooks();
     }
     // check snackbar
-    // this.openErrorSnackbar("Hello there");
+    // this.openSnackbar("Hello there", "success");
+    // this.openSnackbar("General Kenobi", "red");
+  },
+  updated() {
+    if (this.authUser) {
+      console.log(this.booksList);
+    }
   },
 };
