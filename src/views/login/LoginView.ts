@@ -1,3 +1,5 @@
+import { useRouter } from "vue-router";
+
 export default {
   name: "LoginView",
   emits: ["authenticate"],
@@ -60,6 +62,7 @@ export default {
       }
 
       this.isLoading = true;
+      const router = useRouter();
 
       const user = {
         email: this.email,
@@ -67,12 +70,13 @@ export default {
       };
 
       this.$store.dispatch("auth/login", user).then(
-        () => {
+        (response) => {
           this.alertType = "success";
           this.alertMessage = "Login Successful.";
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 2000);
+          router.push({ name: "home" });
         },
         (error) => {
           this.isLoading = false;
@@ -80,6 +84,8 @@ export default {
           this.alertMessage = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         }
       );
+
+      // I want to send the user to the / "home" route
     },
     submitRegister() {
       if (!this.isRegisterFormValid) {

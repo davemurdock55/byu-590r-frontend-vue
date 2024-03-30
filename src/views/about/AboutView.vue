@@ -7,6 +7,6 @@
         that you never have to remember which book you wanted to read next again.</v-text
       >
     </v-sheet>
-    <v-img src="/public/images/Bookhaven_about_sq.png" width="600"></v-img>
+    <v-img src="/images/Bookhaven_about_sq.png" width="600"></v-img>
   </v-sheet>
 </template>
