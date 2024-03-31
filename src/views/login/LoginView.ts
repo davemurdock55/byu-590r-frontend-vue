@@ -63,7 +63,6 @@ export default {
 
       this.isLoading = true;
 
-      
       const user = {
         email: this.email,
         password: this.password,
