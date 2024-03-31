@@ -62,7 +62,6 @@ export default {
       }
 
       this.isLoading = true;
-      const router = useRouter();
 
       const user = {
         email: this.email,
@@ -73,10 +72,9 @@ export default {
         (response) => {
           this.alertType = "success";
           this.alertMessage = "Login Successful.";
-          // setTimeout(() => {
-          //   window.location.reload();
-          // }, 2000);
-          router.push({ name: "home" });
+          this.router.push({ name: "home" });
+          window.location.reload();
+          this.isLoading = false;
         },
         (error) => {
           this.isLoading = false;
@@ -126,5 +124,13 @@ export default {
   created() {
     // console.log("Login created");
     // console.log(this.isAuthenticated);
+  },
+  setup() {
+    const router = useRouter();
+
+    return {
+      router,
+      // other setup logic
+    };
   },
 };
