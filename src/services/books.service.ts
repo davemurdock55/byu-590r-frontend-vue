@@ -65,6 +65,12 @@ class BooksService {
       return response.data.result;
     });
   }
+
+  getAuthors() {
+    return axios.get(API_URL + "authors", { headers: authHeader() }).then((response) => {
+      return response.data.result;
+    });
+  }
 }
 
 const booksService = new BooksService();

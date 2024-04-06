@@ -35,8 +35,8 @@ export default {
       isAddFormValid: false,
 
       selectedBook: {},
-      bookDialog: false,
-      bookDialogIsLoading: false,
+      viewBookDialog: false,
+      viewBookDialogIsLoading: false,
 
       editingBook: {},
       editBookDialog: false,
@@ -54,6 +54,13 @@ export default {
       booksList() {
         return this.$store.state.books.booksList;
       },
+      allAuthors() {
+        return this.$store.state.books.allAuthorsList;
+      },
+      allAuthorNames() {
+        return this.$store.state.books.allAuthorsList.map((author) => author.name);
+      },
+
       // book() {
       //   return this.$store.state.books.book;
       // },
@@ -75,6 +82,13 @@ export default {
       this.$store.dispatch("books/getBooks").then(() => {
         this.isLoadingBooks = false;
         // console.log(this.$store.state.books);
+      });
+    },
+
+    getAllAuthors() {
+      this.$store.dispatch("books/getAllAuthors").then(() => {
+        // this.isLoadingBooks = false;
+        console.log("got all authors: ", this.$store.state.books.allAuthorsList);
       });
     },
 
@@ -169,18 +183,22 @@ export default {
     },
 
     openBookDialog(book) {
-      this.bookDialog = true;
+      this.viewBookDialog = true;
       this.selectedBook = book;
     },
     closeBookDialog() {
       this.selectedBook = {};
-      this.bookDialog = false;
+      this.viewBookDialog = false;
     },
 
     openEditDialog(book) {
+      this.getAllAuthors();
+
+      const author = this.allAuthors.find((author) => author.id === book.author_id);
+      this.editingBook = { ...book, author_name: author ? author.name : "" };
+
+      this.viewBookDialog = false;
       this.editBookDialog = true;
-      this.bookDialog = false;
-      this.editingBook = book;
     },
     onExistingBookCoverChange(e) {
       this.errorMessage = null;
@@ -190,7 +208,7 @@ export default {
       var image = e.target.files || e.dataTransfer.files;
 
       if (!image.length) {
-        this.bookDialogIsLoading = false;
+        this.viewBookDialogIsLoading = false;
         this.editBookDialogIsLoading = false;
         return;
       }
@@ -202,17 +220,17 @@ export default {
         .dispatch("books/updateBookCover", this.editingBook)
         .then(() => {
           this.openSnackbar("Cover Updated", "success");
-          this.bookDialogIsLoading = false;
+          this.viewBookDialogIsLoading = false;
           this.editBookDialogIsLoading = false;
         })
         .catch((error) => {
           this.openSnackbar("Book Cover Upload failed. " + error.response.data.message, "red");
           this.editingBook.cover = backupCover;
-          this.bookDialogIsLoading = false;
+          this.viewBookDialogIsLoading = false;
           this.editBookDialogIsLoading = false;
         });
 
-      this.bookDialogIsLoading = false;
+      this.viewBookDialogIsLoading = false;
       this.editBookDialogIsLoading = false;
     },
     removeBookCover() {
@@ -225,7 +243,7 @@ export default {
       var image = null;
 
       if (image != null) {
-        this.bookDialogIsLoading = false;
+        this.viewBookDialogIsLoading = false;
         this.editBookDialogIsLoading = false;
         return;
       }
@@ -235,7 +253,7 @@ export default {
       this.$store
         .dispatch("books/removeBookCover", this.editingBook)
         .then(() => {
-          this.bookDialogIsLoading = false;
+          this.viewBookDialogIsLoading = false;
           this.editBookDialogIsLoading = false;
         })
         .catch((error) => {
@@ -247,22 +265,29 @@ export default {
           }
 
           this.editingBook.cover = backupCover;
-          this.bookDialogIsLoading = false;
+          this.viewBookDialogIsLoading = false;
           this.editBookDialogIsLoading = false;
         });
 
-      this.bookDialogIsLoading = false;
+      this.viewBookDialogIsLoading = false;
       this.editBookDialogIsLoading = false;
     },
     editBook() {
       this.editBookDialogIsLoading = true;
       this.errorMessage = null;
 
+      // Update the editingBook object with author_id based on author_name or handle it appropriately in your updateBook action
+      // For example:
+      const author = this.allAuthors.find((author) => author.name === this.editingBook.author_name);
+      if (author) {
+        this.editingBook.author_id = author.id;
+      }
+
       this.$store
         .dispatch("books/updateBook", this.editingBook)
         .then(() => {
           this.closeEditDialog();
-          this.editingBook = {};
+          this.editingBook = {}; // Reset editingBook after successful update
           this.openSnackbar("Edits Saved", "success");
           this.editBookDialogIsLoading = false;
         })
@@ -270,13 +295,11 @@ export default {
           this.openSnackbar("Editing failed. " + error.response.data.message, "red");
           this.editBookDialogIsLoading = false;
         });
-
-      // this.closeEditDialog();
     },
     closeEditDialog() {
       this.editingBook = {};
       this.editBookDialog = false;
-      this.bookDialog = true;
+      this.viewBookDialog = true;
     },
 
     openDeleteDialog(book) {

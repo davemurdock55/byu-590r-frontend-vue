@@ -1,7 +1,10 @@
 // control the state and pull in the service
 import bookService from "../services/books.service";
 
-const initialState = { booksList: [] };
+const initialState = {
+  booksList: [],
+  allAuthorsList: [],
+};
 
 export const books = {
   namespaced: true,
@@ -58,6 +61,13 @@ export const books = {
         return Promise.resolve(response.book);
       });
     },
+
+    getAllAuthors({ commit }) {
+      return bookService.getAuthors().then((authorsList) => {
+        commit("setAllAuthors", authorsList);
+        return Promise.resolve(authorsList);
+      });
+    },
   },
 
   mutations: {
@@ -90,6 +100,9 @@ export const books = {
       // removing the book at that index in the array and only 1 book.
       state.booksList.splice(book.index, 1);
     },
+    setAllAuthors(state, authorsList) {
+      state.allAuthorsList = authorsList;
+    },
   },
 
   getters: {
@@ -100,6 +113,9 @@ export const books = {
       return state.booksList.findIndex((book) => {
         return book.id === bookID;
       });
+    },
+    getAuthors: (state) => {
+      return state.allAuthorsList;
     },
   },
 };

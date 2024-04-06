@@ -1,7 +1,7 @@
 <template>
   <!-- View Book Dialog -->
-  <v-dialog v-model="bookDialog" max-width="600">
-    <v-card rounded="lg" :loading="bookDialogIsLoading" accent="blue" class="pb-16">
+  <v-dialog v-model="viewBookDialog" max-width="600">
+    <v-card rounded="lg" :loading="viewBookDialogIsLoading" accent="blue">
       <template v-slot:loader="{ isActive }">
         <v-progress-linear :active="isActive" color="blue" height="3" indeterminate></v-progress-linear>
       </template>
@@ -27,9 +27,12 @@
           <h3 class="text-h4">{{ selectedBook.title }}</h3>
           <p class="text-grey-lighten-1" v-if="selectedBook.date_published">{{ formattedDate }}</p>
 
-          <div class="justify-center mb-2 text-center d-flex align-center">
-            <p class="text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
-            <v-rating v-model="selectedBook.overall_rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments></v-rating>
+          <div class="text-center mb-3">
+            <div class="d-flex justify-center align-center mb-n2">
+              <p class="text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
+              <v-rating v-model="selectedBook.overall_rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments></v-rating>
+            </div>
+            <a class="text-yellow-darken-2 text-decoration-underline text-subtitle-2" href="https://www.google.com" target="_blank">See Reviews</a>
           </div>
 
           <div
@@ -63,6 +66,12 @@
         </div>
         <p>{{ selectedBook.description }}</p>
       </v-card-text>
+      <v-card-actions class="px-5 py-4 ga-2">
+        <v-spacer></v-spacer>
+        <v-btn @click="" variant="flat" prepend-icon="mdi-plus" color="blue" size="large" class="px-4" type="submit">Add To Reading List</v-btn>
+        <!-- <v-btn @click="" variant="outlined" prepend-icon="mdi-check" color="green" size="large" class="px-4" type="submit">Added To Reading List</v-btn> -->
+        <v-spacer></v-spacer>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 
@@ -124,7 +133,7 @@
 
               <v-responsive class="mx-auto" min-width="300">
                 <v-btn :disabled="!editingBook.cover" prepend-icon="mdi-close-box" @click="removeBookCover()" class="mt-3" variant="text" color="red" :max-width="300">Remove Book Cover</v-btn>
-                <v-text-field label="Author" variant="underlined" v-model="editingBook.author" :rules="requiredRule" color="blue"></v-text-field>
+                <v-autocomplete clearable label="Author" variant="underlined" v-model="editingBook.author_name" :items="allAuthorNames" :rules="requiredRule" color="blue"></v-autocomplete>
               </v-responsive>
               <v-textarea label="Description" variant="underlined" v-model="editingBook.description" color="blue" auto-grow :rows="3"></v-textarea>
             </div>
@@ -133,7 +142,7 @@
 
         <v-card-actions class="px-5 py-4 ga-2">
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="closeEditDialog()" size="large">Close</v-btn>
+          <v-btn variant="text" @click="closeEditDialog()" size="large">Cancel</v-btn>
           <v-btn @click="editBook()" :disabled="!isEditFormValid | editBookDialogIsLoading" :loading="editBookDialogIsLoading" variant="flat" color="blue" size="large" type="submit">Save</v-btn>
         </v-card-actions>
       </v-card>
@@ -268,8 +277,8 @@
           </v-card>
         </template>
       </v-hover>
-    </v-sheet></v-sheet
-  >
+    </v-sheet>
+  </v-sheet>
 
   <!-- Error Snackbar -->
   <v-snackbar :color="snackbarColor" v-model="snackbar">
