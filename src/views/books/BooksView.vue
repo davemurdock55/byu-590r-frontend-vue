@@ -95,8 +95,8 @@
                     </div>
                   </template>
                   <div class="flex-row mr-2 d-flex" v-if="User.user.id == review.pivot.user_id">
-                    <v-card-text>{{ review.pivot.comment }}</v-card-text>
-                    <v-hover v-slot="{ hover }">
+                    <v-card-text class="text-body-1">{{ review.pivot.comment }}</v-card-text>
+                    <v-hover>
                       <v-btn icon="mdi-trash-can" flat>
                         <template v-slot:default>
                           <v-icon color="red" size="large">mdi-trash-can</v-icon>
@@ -104,7 +104,7 @@
                       </v-btn>
                     </v-hover>
                   </div>
-                  <v-card-text v-else>{{ review.pivot.comment }}</v-card-text>
+                  <v-card-text class="text-body-1" v-else>{{ review.pivot.comment }}</v-card-text>
                 </v-card>
               </div>
 
