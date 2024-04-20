@@ -92,6 +92,7 @@ export const books = {
     },
     setBook(state, book) {
       state.booksList[book.index] = book;
+      // Look into this maybe to fix state issues when editing
     },
     updateBookCover(state, book) {
       state.booksList[book.index].cover = book.cover;

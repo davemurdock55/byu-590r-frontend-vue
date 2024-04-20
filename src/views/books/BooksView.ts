@@ -22,7 +22,8 @@ export default {
       newBook: {
         title: "",
         series: "",
-        author: "",
+        author_id: 0,
+        author_name: "",
         cover: "",
         description: "",
         rating: 0,
@@ -88,15 +89,17 @@ export default {
     getAllAuthors() {
       this.$store.dispatch("books/getAllAuthors").then(() => {
         // this.isLoadingBooks = false;
-        console.log("got all authors: ", this.$store.state.books.allAuthorsList);
+        // console.log("got all authors: ", this.$store.state.books.allAuthorsList);
       });
     },
 
     openAddDialog() {
+      this.getAllAuthors();
       this.newBook = {
         title: "",
         series: "",
-        author: "",
+        author_id: 0,
+        author_name: "",
         cover: "",
         description: "",
         rating: 0,
@@ -136,6 +139,12 @@ export default {
       this.addBookDialogIsLoading = true;
       this.errorMessage = null;
 
+      const addAuthor = this.allAuthors.find((author) => author.name === this.newBook.author_name);
+      if (addAuthor) {
+        this.newBook.author_id = addAuthor.id;
+      }
+      console.log("this.newBook: ", this.newBook);
+
       this.$store
         .dispatch("books/createBook", this.newBook)
         .then(() => {
@@ -143,7 +152,8 @@ export default {
           this.newBook = {
             title: "",
             series: "",
-            author: "",
+            author_id: 0,
+            author_name: "",
             cover: "",
             description: "",
             rating: 0,
@@ -158,7 +168,8 @@ export default {
           this.newBook = {
             title: "",
             series: "",
-            author: "",
+            author_id: 0,
+            author_name: "",
             cover: "",
             description: "",
             rating: 0,
@@ -173,7 +184,8 @@ export default {
       this.newBook = {
         title: "",
         series: "",
-        author: "",
+        author_id: 0,
+        author_name: "",
         cover: "",
         description: "",
         rating: 0,
@@ -194,8 +206,9 @@ export default {
     openEditDialog(book) {
       this.getAllAuthors();
 
-      const author = this.allAuthors.find((author) => author.id === book.author_id);
-      this.editingBook = { ...book, author_name: author ? author.name : "" };
+      // const author = this.allAuthors.find((author) => author.id === book.author_id);
+      // this.editingBook = { ...book, author_name: author ? author.name : "" };
+      this.editingBook = { ...book, author_name: book.author ? book.author.name : "" };
 
       this.viewBookDialog = false;
       this.editBookDialog = true;
@@ -218,7 +231,9 @@ export default {
 
       this.$store
         .dispatch("books/updateBookCover", this.editingBook)
-        .then(() => {
+        .then((response) => {
+          this.editingBook = response; // Update the editingBook object with the new cover data
+          this.selectedBook = response; // Update the selectedBook object with the new cover data
           this.openSnackbar("Cover Updated", "success");
           this.viewBookDialogIsLoading = false;
           this.editBookDialogIsLoading = false;
@@ -239,6 +254,7 @@ export default {
       var backupCover = this.editingBook.cover;
 
       this.editBookDialogIsLoading = true;
+      this.viewBookDialogIsLoading = true;
 
       var image = null;
 
@@ -278,14 +294,16 @@ export default {
 
       // Update the editingBook object with author_id based on author_name or handle it appropriately in your updateBook action
       // For example:
-      const author = this.allAuthors.find((author) => author.name === this.editingBook.author_name);
-      if (author) {
-        this.editingBook.author_id = author.id;
+      const editAuthor = this.allAuthors.find((author) => author.name === this.editingBook.author_name);
+      if (editAuthor) {
+        this.editingBook.author_id = editAuthor.id;
       }
 
       this.$store
         .dispatch("books/updateBook", this.editingBook)
-        .then(() => {
+        .then((response) => {
+          // Adding the returned (uprdated) book (which is response) as the selectedBook
+          this.selectedBook = response;
           this.closeEditDialog();
           this.editingBook = {}; // Reset editingBook after successful update
           this.openSnackbar("Edits Saved", "success");
@@ -352,7 +370,7 @@ export default {
   },
   updated() {
     if (this.authUser) {
-      console.log(this.booksList);
+      // console.log("BooksView updated(): ", this.booksList);
     }
   },
 };

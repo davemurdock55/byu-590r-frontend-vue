@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from "vue-router";
 import LoginView from "./views/login/LoginView.vue";
 import { mapState } from "vuex";
 import { ref } from "vue";
-import Navbar from "./components/partials/navbar/Navbar.vue";
+// import Navbar from "./components/partials/navbar/Navbar.vue";
 
 export default {
   data: function () {
@@ -250,7 +250,7 @@ export default {
     <v-main>
       <v-container class="pa-0" fluid>
         <div v-if="isAuthenticated" class="app-content">
-          <Navbar />
+          <!-- <Navbar /> -->
           <RouterView />
         </div>
         <LoginView v-else :is-authenticated="isAuthenticated" @authenticate="checkAuth($event)" />

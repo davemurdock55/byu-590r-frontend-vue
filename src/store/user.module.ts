@@ -1,7 +1,8 @@
 // control the state and pull in the service
 import userService from "../services/user.service";
+import { books } from "./books.module";
 
-const initialState = { user: { avatar: "", email: "", email_verified_at: "", name: "" } };
+const initialState = { user: { avatar: "", email: "", email_verified_at: "", name: "", reading_list: [] } };
 
 export const user = {
   namespaced: true,
@@ -43,14 +44,27 @@ export const user = {
         }
       );
     },
+    addBookToReadingList({ commit }, books_to_add) {
+      console.log("module 'books_to_add': ", books_to_add);
+      return userService.addBookToReadingList(books_to_add).then((response) => {
+        commit("setUser", response.user.reading_list);
+        return Promise.resolve(response.user);
+      });
+    },
   },
   mutations: {
     setUser(state, user) {
       state.user = user;
     },
+    setUserReadingList(state, reading_list) {
+      state.user.reading_list = reading_list;
+    },
     setEmail(state, user) {
       state.user.email = user.email;
     },
+    // setBookToReadingList(state, book) {
+    //   state.user.reading_list.push(book);
+    // },
   },
   getters: {
     getUser: (state) => {

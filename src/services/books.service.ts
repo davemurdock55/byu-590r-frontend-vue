@@ -14,14 +14,14 @@ class BooksService {
     let formData = new FormData();
     formData.append("title", book.title);
     formData.append("series", book.series);
-    formData.append("author", book.author);
+    formData.append("author_id", book.author_id);
     formData.append("cover", book.cover);
     // // Append cover image if it exists
     // if (book.cover instanceof File) {
     //   formData.append("cover", book.cover);
     // }
     formData.append("description", book.description);
-    formData.append("rating", book.rating);
+    // formData.append("rating", book.rating);
 
     // Ensure date_published is in YYYY-MM-DD format
     if (book.date_published) {

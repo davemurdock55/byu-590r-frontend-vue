@@ -27,10 +27,10 @@
           <h3 class="text-h4">{{ selectedBook.title }}</h3>
           <p class="text-grey-lighten-1" v-if="selectedBook.date_published">{{ formattedDate }}</p>
 
-          <div class="text-center mb-3">
-            <div class="d-flex justify-center align-center mb-n2">
+          <div class="mb-3 text-center">
+            <div class="justify-center d-flex align-center mb-n2">
               <p class="text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
-              <v-rating v-model="selectedBook.overall_rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments></v-rating>
+              <v-rating v-model="selectedBook.overall_rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments readonly></v-rating>
             </div>
             <a class="text-yellow-darken-2 text-decoration-underline text-subtitle-2" href="https://www.google.com" target="_blank">See Reviews</a>
           </div>
@@ -47,7 +47,7 @@
             <v-img height="300" :src="selectedBook.cover"></v-img>
           </div>
           <div class="flex-row justify-center mb-5 d-flex">
-            <v-file-input
+            <!-- <v-file-input
               prepend-icon="mdi-image-area"
               clearable
               ref="bookCoverUpload"
@@ -57,7 +57,7 @@
               rounded="lg"
               color="blue"
               class="d-none"
-            ></v-file-input>
+            ></v-file-input> -->
             <p class="text-medium-emphasis">{{ selectedBook.author ? selectedBook.author.name : "Unknown Author" }}</p>
             <!-- <p class="text-medium-emphasis">{{ selectedBook.author.name }}</p> -->
             <!-- <v-btn icon="mdi-trash-can-outline" @click="removeAvatar()" class="mt-3" variant="text"></v-btn> -->
@@ -102,21 +102,25 @@
               <v-text-field label="Date Published" variant="underlined" v-model="editingBook.date_published" :rules="dateFormatRule" color="blue" placeholder="YYYY-MM-DD"></v-text-field>
             </v-responsive>
 
-            <div class="justify-center mb-2 text-center d-flex align-center">
+            <!-- taking out "rating" since you should just rate the book to give it a rating. An admin shouldn't be able to just edit the ratings haha -->
+            <!-- <div class="justify-center mb-2 text-center d-flex align-center">
               <p class="text-h6 font-weight-light text-yellow-darken-2">{{ editingBook.rating }}</p>
               <v-rating v-model="editingBook.rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments></v-rating>
-            </div>
+            </div> -->
 
+            <!-- <v-skeleton-loader v-if="editBookDialogIsLoading || viewBookDialogIsLoading" type="card"></v-skeleton-loader> -->
             <div
               v-if="editingBook.cover == null || editingBook.cover == undefined || editingBook.cover == '' || editingBook == null || editingBook == undefined || editingBook == {}"
               class="upload_book_area pa-6"
+              style="cursor: pointer"
               @click="$refs.bookEditCoverUpload.click()"
+              :loading="editBookDialogIsLoading || viewBookDialogIsLoading"
             >
               <v-text class="justify-center d-flex text-grey-lighten-1" color="grey-lighten-1">Upload Book Cover</v-text>
               <v-icon icon="mdi-image-area" color="grey-lighten-1" size="x-large"></v-icon>
             </div>
             <div v-else-if="editingBook.cover">
-              <v-img height="300" :src="editingBook.cover"></v-img>
+              <v-img height="300" :src="editingBook.cover" :loading="editBookDialogIsLoading || viewBookDialogIsLoading"></v-img>
             </div>
             <div class="justify-center d-flex flex-column">
               <v-file-input
@@ -176,10 +180,10 @@
               <v-text-field label="Date Published" variant="underlined" v-model="newBook.date_published" :rules="dateFormatRule" color="blue" placeholder="YYYY-MM-DD" required="false"></v-text-field>
             </v-responsive>
 
-            <div class="justify-center mb-2 text-center d-flex align-center">
+            <!-- <div class="justify-center mb-2 text-center d-flex align-center">
               <p class="text-h6 font-weight-light text-yellow-darken-2">{{ newBook.rating }}</p>
               <v-rating v-model="newBook.rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments></v-rating>
-            </div>
+            </div> -->
 
             <div v-if="newBook.cover && newBook.cover != null && newBook.cover != undefined && newBook.cover_display != null && newBook.cover_display != undefined">
               <v-img height="300" :src="newBook.cover_display"></v-img>
@@ -206,7 +210,7 @@
 
               <v-responsive class="mx-auto" min-width="300">
                 <v-btn :disabled="!newBook.cover" prepend-icon="mdi-close-box" @click="newBook.cover = null" class="mt-3" variant="text" color="red" :max-width="300">Remove Book Cover</v-btn>
-                <v-text-field label="Author" variant="underlined" v-model="newBook.author" :rules="requiredRule" color="blue"></v-text-field>
+                <v-autocomplete clearable label="Author" variant="underlined" v-model="newBook.author_name" :items="allAuthorNames" :rules="requiredRule" color="blue"></v-autocomplete>
               </v-responsive>
               <v-textarea label="Description" variant="underlined" v-model="newBook.description" color="blue" auto-grow :rows="3"></v-textarea>
             </div>
@@ -280,7 +284,7 @@
     </v-sheet>
   </v-sheet>
 
-  <!-- Error Snackbar -->
+  <!-- Snackbar -->
   <v-snackbar :color="snackbarColor" v-model="snackbar">
     <!-- <template v-slot:activator="{ props }"> </template> -->
     <p class="text-body-1">{{ snackBarMessage }}</p>

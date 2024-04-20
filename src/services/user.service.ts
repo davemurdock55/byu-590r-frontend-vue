@@ -35,6 +35,12 @@ class UserService {
       return response.data.result;
     });
   }
+
+  addBookToReadingList(books_to_add) {
+    return axios.post(API_URL + "user/add_books_to_reading_list", books_to_add, { headers: authHeader() }).then((response) => {
+      return response.data.result;
+    });
+  }
 }
 
 const userService = new UserService();
