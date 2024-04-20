@@ -6,6 +6,7 @@ export default {
   data: function () {
     return {
       isLoadingBooks: true,
+      isAddingBookToReadingList: false,
       snackbar: false,
       snackbarColor: "",
       snackBarMessage: null,
@@ -197,6 +198,23 @@ export default {
     openBookDialog(book) {
       this.viewBookDialog = true;
       this.selectedBook = book;
+    },
+    addBookToReadingList(selectedBook) {
+      this.isAddingBookToReadingList = true;
+
+      var BooksToAddArray = [selectedBook];
+
+      console.log("books to add: ", BooksToAddArray);
+      this.$store
+        .dispatch("user/addBookToReadingList", BooksToAddArray)
+        .then(() => {
+          this.isAddingBookToReadingList = false;
+          this.openSnackbar("Book added to Reading List!", "success");
+        })
+        .catch((error) => {
+          this.openSnackbar("Failed to add book to reading list. " + error.response.data.message, "red");
+          this.isAddingBookToReadingList = false;
+        });
     },
     closeBookDialog() {
       this.selectedBook = {};

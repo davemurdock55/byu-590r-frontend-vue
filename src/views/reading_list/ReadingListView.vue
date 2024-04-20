@@ -10,6 +10,7 @@
         closable-chips
         label="Books to Add"
         @update:modelValue="booksToAdd = $event"
+        @keyup.enter="addBookToReadingList()"
         :items="allBooks"
         :item-title="(book) => book.title"
         :item-value="(book) => book"
@@ -27,31 +28,30 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="closeDeleteBookDialog()">Cancel</v-btn>
+        <v-btn @click="closeAddBookDialog()">Cancel</v-btn>
         <v-btn @click="addBookToReadingList()" v-model="booksToAdd" color="blue" variant="flat" :loading="isAddingBooks">Add</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <!-- Delete Dialog -->
-  <v-dialog v-model="deleteBookDialog" max-width="500">
+  <!-- Remove Dialog -->
+  <v-dialog v-model="removeBookDialog" max-width="500">
     <v-card>
       <v-card-title>
-        <v-text class="text-red">Delete From Reading List</v-text>
+        <v-text class="text-red">Remove From Reading List?</v-text>
       </v-card-title>
-      <!-- <template v-slot:loader="{ isActive }">
+      <template v-slot:loader="{ isActive }">
         <v-progress-linear :active="isActive" color="blue" height="3" indeterminate></v-progress-linear>
-      </template> -->
-      <!-- <v-card-text>
-        Are you sure you want to delete <strong>{{ selectedBook.title }}</strong
-        >? This action cannot be undone.
-      </v-card-text> -->
+      </template>
+      <v-card-text>
+        Are you sure you want to remove <strong>{{ selectedBook.title }}</strong> from your reading list?
+      </v-card-text>
 
-      <!-- <v-card-actions>
+      <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="closeDeleteDialog()">Cancel</v-btn>
-        <v-btn @click="deleteBook()" color="red">Delete</v-btn>
-      </v-card-actions> -->
+        <v-btn @click="closeRemoveBookDialog()">Cancel</v-btn>
+        <v-btn @click="removeBookFromReadingList(selectedBook, 'Book removed', 'red')" variant="flat" color="red" :loading="removeBookDialogIsLoading">Remove</v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 
@@ -79,21 +79,32 @@
           <div class="py-2">
             <div class="justify-start text-center d-flex align-center">
               <p class="text-h6 font-weight-light text-yellow-darken-2">{{ book.overall_rating }}</p>
-              <v-rating v-model="book.overall_rating" active-color="yellow-darken-2" color="yellow-darken-2" density="compact" clearable hover half-increments></v-rating>
+              <v-rating v-model="book.overall_rating" active-color="yellow-darken-2" color="yellow-darken-2" density="compact" clearable hover half-increments readonly></v-rating>
             </div>
             <v-card-text :class="{ 'text-black': $vuetify.theme.dark === false, 'text-white': $vuetify.theme.dark === true }" class="pl-0">{{ book.description }}</v-card-text>
             <div class="flex-row d-flex ga-5">
-              <v-btn prepend-icon="mdi-book-check-outline" color="success" variant="outlined">Finished</v-btn>
-              <v-btn prepend-icon="mdi-book-minus-outline" color="red" variant="outlined" @click="openDeleteBookDialog()">Remove</v-btn>
+              <v-btn prepend-icon="mdi-book-check-outline" color="success" variant="outlined" @click="removeBookFromReadingList(book, 'Congratulations on finishing the book!!', 'success')"
+                >Finished</v-btn
+              >
+              <v-btn prepend-icon="mdi-book-minus-outline" color="red" variant="outlined" @click="openRemoveBookDialog(book)">Remove</v-btn>
             </div>
           </div>
         </v-card>
       </template>
     </v-hover>
-    <!-- <v-progress-linear v-else-if="isLoadingBooks" color="blue" class="mt-12" width="200" indeterminate></v-progress-linear> -->
+    <v-progress-linear v-else-if="isLoadingBooks" color="blue" class="mt-12" width="200" indeterminate></v-progress-linear>
 
     <v-text v-else>No books in the reading list.</v-text>
   </v-sheet>
+
+  <!-- Snackbar -->
+  <v-snackbar :color="snackbarColor" v-model="snackbar">
+    <!-- <template v-slot:activator="{ props }"> </template> -->
+    <p class="text-body-1">{{ snackBarMessage }}</p>
+    <template v-slot:actions>
+      <v-btn variant="text" @click="closeSnackbar">CLOSE</v-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <script src="./ReadingListView.ts" />

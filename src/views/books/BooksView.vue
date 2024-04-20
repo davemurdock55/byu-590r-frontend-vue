@@ -65,10 +65,17 @@
           </div>
         </div>
         <p>{{ selectedBook.description }}</p>
+        <div v-if="selectedBook.reviews" v-for="review in selectedBook.reviews">
+          <v-img :src="review.avatar"></v-img>
+          <p>{{ review.name }}</p>
+          <p>{{ review.pivot.rating }}</p>
+          <p>{{ review.pivot.comment }}</p>
+          <p>{{ review }}</p>
+        </div>
       </v-card-text>
       <v-card-actions class="px-5 py-4 ga-2">
         <v-spacer></v-spacer>
-        <v-btn @click="" variant="flat" prepend-icon="mdi-plus" color="blue" size="large" class="px-4" type="submit">Add To Reading List</v-btn>
+        <v-btn @click="addBookToReadingList(selectedBook)" variant="flat" prepend-icon="mdi-plus" color="blue" size="large" class="px-4" :loading="isAddingBookToReadingList">Add To Reading List</v-btn>
         <!-- <v-btn @click="" variant="outlined" prepend-icon="mdi-check" color="green" size="large" class="px-4" type="submit">Added To Reading List</v-btn> -->
         <v-spacer></v-spacer>
       </v-card-actions>

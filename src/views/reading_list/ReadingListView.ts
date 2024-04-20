@@ -6,10 +6,18 @@ export default {
   data: function () {
     return {
       isLoadingBooks: false,
+
+      booksToAdd: [],
       addBookDialog: false,
       isAddingBooks: false,
-      deleteBookDialog: false,
-      booksToAdd: [],
+
+      selectedBook: {},
+      removeBookDialog: false,
+      removeBookDialogIsLoading: false,
+
+      snackbar: false,
+      snackbarColor: "",
+      snackBarMessage: null,
     };
   },
 
@@ -19,7 +27,7 @@ export default {
         return this.$store.state.user.user;
       },
       reading_list() {
-        return this.user ? this.user.reading_list : null;
+        return this.user ? this.user.reading_list : [];
       },
       reading_list_status_color() {
         if (this.reading_list && this.reading_list.status) {
@@ -55,20 +63,63 @@ export default {
     addBookToReadingList() {
       this.isAddingBooks = true;
       console.log("books to add: ", this.booksToAdd);
-      this.$store.dispatch("user/addBookToReadingList", this.booksToAdd).then(() => {
-        this.isAddingBooks = false;
-        this.closeAddBookDialog();
-      });
+      this.$store
+        .dispatch("user/addBookToReadingList", this.booksToAdd)
+        .then(() => {
+          this.isAddingBooks = false;
+          this.openSnackbar("Added book to reading list!", "success");
+          this.closeAddBookDialog();
+        })
+        .catch((error) => {
+          this.isAddingBooks = false;
+          console.log("error: ", error);
+          this.openSnackbar("Failed to add book to reading list. " + error, "red");
+          this.closeAddBookDialog();
+        });
     },
     closeAddBookDialog() {
+      this.isAddingBooks = false;
       this.addBookDialog = false;
     },
 
-    openDeleteBookDialog() {
-      this.deleteBookDialog = true;
+    openRemoveBookDialog(book) {
+      this.selectedBook = book;
+      this.removeBookDialog = true;
     },
-    closeDeleteBookDialog() {
-      this.deleteBookDialog = false;
+    removeBookFromReadingList(book, message, color) {
+      this.removeBookDialogIsLoading = true;
+      this.errorMessage = null;
+
+      this.$store
+        .dispatch("user/removeBookFromReadingList", book)
+        .then(() => {
+          this.removeBookDialogIsLoading = false;
+          this.openSnackbar(message, color);
+          this.closeRemoveBookDialog();
+          this.selectedBook = {};
+        })
+        .catch((error) => {
+          console.log("error: ", error);
+          this.removeBookDialogIsLoading = false;
+          this.openSnackbar("Deleting failed. " + error, "red");
+        });
+
+      this.removeBookDialogIsLoading = false;
+    },
+    closeRemoveBookDialog() {
+      this.selectedBook = {};
+      this.removeBookDialog = false;
+      this.removeBookDialogIsLoading = false;
+    },
+
+    openSnackbar(message, color) {
+      this.snackbar = true;
+      this.snackBarMessage = message;
+      this.snackbarColor = color;
+    },
+    closeSnackbar() {
+      this.snackbar = false;
+      this.snackBarMessage = null;
     },
   },
 

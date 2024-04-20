@@ -38,6 +38,18 @@ class UserService {
 
   addBookToReadingList(books_to_add) {
     return axios.post(API_URL + "user/add_books_to_reading_list", books_to_add, { headers: authHeader() }).then((response) => {
+      console.log(response.data.result);
+      return response.data.result;
+    });
+  }
+
+  removeBookFromReadingList(book) {
+    let formData = new FormData();
+
+    formData.append("id", book.id);
+
+    return axios.post(API_URL + "user/" + book.id + "/remove_book_from_reading_list", book.id, { headers: authHeader() }).then((response) => {
+      console.log(response);
       return response.data.result;
     });
   }
