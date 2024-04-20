@@ -1,27 +1,35 @@
 <template>
   <!-- View Book Dialog -->
   <v-dialog v-model="viewBookDialog" max-width="600">
-    <v-card rounded="lg" :loading="viewBookDialogIsLoading" accent="blue">
+    <v-card rounded="lg" :loading="viewBookDialogIsLoading" accent="blue" class="pb-1">
       <template v-slot:loader="{ isActive }">
         <v-progress-linear :active="isActive" color="blue" height="3" indeterminate></v-progress-linear>
       </template>
-      <v-card-title class="px-2 py-1 my-0 d-flex justify-space-between align-center">
-        <div class="pl-3 d-flex align-center">
-          <v-icon color="grey-darken-1">mdi-book-outline</v-icon>
-          <h5 class="text-body-1 text-medium-emphasis ps-2">{{ selectedBook.series }}</h5>
-        </div>
-        <v-spacer></v-spacer>
-        <v-menu location="bottom end">
-          <template v-slot:activator="{ props }">
-            <v-btn icon="mdi-book-settings-outline" variant="text" v-bind="props"></v-btn>
+
+      <!-- Card Top Bar -->
+      <v-card-title class="mb-10">
+        <v-app-bar app color="white" flat class="mt-n16" rounded="lg">
+          <div class="pl-3 d-flex align-center">
+            <v-icon color="grey-darken-1">mdi-book-outline</v-icon>
+            <h5 class="text-body-1 text-medium-emphasis ps-2">{{ selectedBook.series }}</h5>
+          </div>
+
+          <template v-slot:append>
+            <v-menu location="bottom end">
+              <template v-slot:activator="{ props }">
+                <v-btn icon="mdi-book-settings-outline" variant="text" v-bind="props"></v-btn>
+              </template>
+              <v-list>
+                <v-list-item prepend-icon="mdi-square-edit-outline" @click="openEditDialog(selectedBook)">Edit Book</v-list-item>
+                <v-list-item prepend-icon="mdi-delete-outline" @click="openDeleteDialog(selectedBook)" base-color="red">Remove Book</v-list-item>
+              </v-list>
+            </v-menu>
+            <v-btn icon="mdi-close" variant="text" @click="closeBookDialog()"> </v-btn>
           </template>
-          <v-list>
-            <v-list-item prepend-icon="mdi-square-edit-outline" @click="openEditDialog(selectedBook)">Edit Book</v-list-item>
-            <v-list-item prepend-icon="mdi-delete-outline" @click="openDeleteDialog(selectedBook)" base-color="red">Remove Book</v-list-item>
-          </v-list>
-        </v-menu>
-        <v-btn icon="mdi-close" variant="text" @click="closeBookDialog()"></v-btn>
+        </v-app-bar>
       </v-card-title>
+
+      <!-- Main Card Content -->
       <v-card-text class="pt-0">
         <div class="justify-center text-center d-flex flex-column">
           <h3 class="text-h4">{{ selectedBook.title }}</h3>
@@ -29,10 +37,10 @@
 
           <div class="mb-3 text-center">
             <div class="justify-center d-flex align-center mb-n2">
-              <p class="text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
+              <p class="text-h6 font-weight-medium text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
               <v-rating v-model="selectedBook.overall_rating" color="yellow-darken-2" density="comfortable" clearable hover half-increments readonly></v-rating>
             </div>
-            <a class="text-yellow-darken-2 text-decoration-underline text-subtitle-2" href="https://www.google.com" target="_blank">See Reviews</a>
+            <a class="text-yellow-darken-2 text-decoration-underline text-subtitle-2" @click="showReviews = showReviews === 'show' ? '' : 'show'" style="cursor: pointer"> See Reviews </a>
           </div>
 
           <div
@@ -46,7 +54,7 @@
           <div v-else-if="selectedBook.cover" class="mb-2">
             <v-img height="300" :src="selectedBook.cover"></v-img>
           </div>
-          <div class="flex-row justify-center mb-5 d-flex">
+          <div class="flex-row justify-center mb-0 d-flex">
             <!-- <v-file-input
               prepend-icon="mdi-image-area"
               clearable
@@ -64,18 +72,70 @@
             <!-- <v-btn :disabled="!avatarURL" prepend-icon="mdi-close-box" @click="removeAvatar()" class="mt-3" variant="text" color="red"> Clear Profile Picture</v-btn> -->
           </div>
         </div>
-        <p>{{ selectedBook.description }}</p>
-        <div v-if="selectedBook.reviews" v-for="review in selectedBook.reviews">
-          <v-img :src="review.avatar"></v-img>
-          <p>{{ review.name }}</p>
-          <p>{{ review.pivot.rating }}</p>
-          <p>{{ review.pivot.comment }}</p>
-          <p>{{ review }}</p>
-        </div>
+        <p class="mb-2">{{ selectedBook.description }}</p>
+        <!-- Reviews -->
+        <v-expansion-panels v-model="showReviews" variant="popout" :elevation="0">
+          <v-expansion-panel title="Reviews" value="show" elevation="0" :color="panelColor">
+            <v-expansion-panel-text>
+              <div v-if="selectedBook.reviews" v-for="review in selectedBook.reviews" class="mb-3">
+                <v-card class="mx-auto" :subtitle="review.email" :title="review.name" border flat>
+                  <template v-slot:prepend>
+                    <v-avatar color="info">
+                      <span v-if="!review.avatar" class="text-h6"
+                        >{{ getInitials(review.name) }}
+                        <!-- <v-icon>mdi-account-circle-outline</v-icon> -->
+                      </span>
+                      <v-img v-else-if="review.avatar" :src="review.avatar"></v-img>
+                    </v-avatar>
+                  </template>
+                  <template v-slot:append class="pa-0">
+                    <div class="justify-start d-flex align-center mt-n6">
+                      <p class="font-weight-medium text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
+                      <v-rating v-model="selectedBook.overall_rating" color="yellow-darken-2" density="comfortable" half-increments readonly></v-rating>
+                    </div>
+                  </template>
+                  <div class="flex-row mr-2 d-flex" v-if="User.user.id == review.pivot.user_id">
+                    <v-card-text>{{ review.pivot.comment }}</v-card-text>
+                    <v-hover v-slot="{ hover }">
+                      <v-btn icon="mdi-trash-can" flat>
+                        <template v-slot:default>
+                          <v-icon color="red" size="large">mdi-trash-can</v-icon>
+                        </template>
+                      </v-btn>
+                    </v-hover>
+                  </div>
+                  <v-card-text v-else>{{ review.pivot.comment }}</v-card-text>
+                </v-card>
+              </div>
+
+              <div class="justify-start mt-3 mb-1 d-flex align-center">
+                <p class="font-weight-medium text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
+                <v-rating v-model="selectedBook.overall_rating" active-color="yellow-darken-2" color="yellow-darken-2" density="comfortable" clearable hover half-increments> </v-rating>
+              </div>
+
+              <v-textarea label="Leave a Review" row-height="15" rows="1" variant="outlined" color="yellow-darken-2" auto-grow>
+                <template #prepend-inner>
+                  <v-icon color="yellow-darken-2">mdi-message-text-outline</v-icon>
+                </template>
+                <template #append class="ma-0">
+                  <v-btn icon="mdi-send-variant" flat>
+                    <template v-slot:default>
+                      <v-icon color="yellow-darken-2" size="large">mdi-send-variant</v-icon>
+                    </template>
+                  </v-btn>
+                  <!-- <v-icon size="large" color="yellow-darken-2">mdi-send-variant</v-icon> -->
+                </template>
+              </v-textarea>
+              <!-- <v-btn type="submit" variant="flat" color="yellow-darken-2" class="text-white">Send</v-btn> -->
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-card-text>
-      <v-card-actions class="px-5 py-4 ga-2">
+      <v-card-actions class="px-5 pt-2 ga-2">
         <v-spacer></v-spacer>
-        <v-btn @click="addBookToReadingList(selectedBook)" variant="flat" prepend-icon="mdi-plus" color="blue" size="large" class="px-4" :loading="isAddingBookToReadingList">Add To Reading List</v-btn>
+        <v-btn @click="addBookToReadingList(selectedBook)" variant="flat" prepend-icon="mdi-plus" color="blue" size="large" class="px-4" :loading="isAddingBookToReadingList"
+          >Add To Reading List</v-btn
+        >
         <!-- <v-btn @click="" variant="outlined" prepend-icon="mdi-check" color="green" size="large" class="px-4" type="submit">Added To Reading List</v-btn> -->
         <v-spacer></v-spacer>
       </v-card-actions>
@@ -273,7 +333,7 @@
           <v-card v-if="!isLoadingBooks" @click="openBookDialog(book)" v-bind="props" :color="isHovering ? 'blue' : undefined" variant="outlined" hover :width="240">
             <v-img class="text-white" height="300" :src="book.cover" position="top" cover></v-img>
             <div class="justify-center pt-2 text-center d-flex align-center">
-              <p class="text-h6 font-weight-light text-yellow-darken-2">{{ book.overall_rating }}</p>
+              <p class="text-h6 font-weight-normal text-yellow-darken-2">{{ book.overall_rating }}</p>
               <v-rating v-model="book.overall_rating" active-color="yellow-darken-2" color="yellow-darken-2" density="compact" readonly hover half-increments></v-rating>
             </div>
 

@@ -1,5 +1,6 @@
 import { mapState } from "vuex";
 import { useDisplay } from "vuetify";
+import { inject } from "vue";
 
 export default {
   name: "BooksView",
@@ -39,6 +40,7 @@ export default {
       selectedBook: {},
       viewBookDialog: false,
       viewBookDialogIsLoading: false,
+      showReviews: "",
 
       editingBook: {},
       editBookDialog: false,
@@ -66,7 +68,12 @@ export default {
       // book() {
       //   return this.$store.state.books.book;
       // },
+      User() {
+        console.log(this.$store.state.user);
+        return this.$store.state.user;
+      },
       authUser() {
+        console.log(this.$store.state.user);
         return this.$store.state.auth.user;
       },
       formattedDate() {
@@ -75,6 +82,25 @@ export default {
           return parts.slice(1).concat(parts[0]).join("/");
         }
         return "";
+      },
+
+      getInitials(full_name) {
+        const nameArray = full_name.split(" ");
+        const firstInitial = nameArray[0][0]; // Get the first initial
+        const lastInitial = nameArray.length > 1 ? nameArray[nameArray.length - 1][0] : ""; // Get the last initial (if there is more than one word)
+        const result = firstInitial + lastInitial;
+
+        return result;
+      },
+
+      themeState() {
+        return inject("themeState") as { theme: string; changeTheme: () => void };
+      },
+      theme() {
+        return this.themeState.theme;
+      },
+      panelColor() {
+        return this.$store.state.theme.themeMode === "light" ? "grey-lighten-3" : "grey-darken-3";
       },
     }),
   },
@@ -89,8 +115,7 @@ export default {
 
     getAllAuthors() {
       this.$store.dispatch("books/getAllAuthors").then(() => {
-        // this.isLoadingBooks = false;
-        // console.log("got all authors: ", this.$store.state.books.allAuthorsList);
+        this.isLoadingBooks = false;
       });
     },
 
@@ -218,6 +243,7 @@ export default {
     },
     closeBookDialog() {
       this.selectedBook = {};
+      this.showReviews = "";
       this.viewBookDialog = false;
     },
 

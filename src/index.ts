@@ -20,6 +20,7 @@ const router = createRouter({
       path: "/books",
       name: "books",
       component: () => import("./views/books/BooksView.vue"),
+      // props: (route) => ({ theme: route.query.theme }),
     },
     {
       path: "/reading_list",

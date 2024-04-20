@@ -2,7 +2,8 @@
 import { RouterLink, RouterView } from "vue-router";
 import LoginView from "./views/login/LoginView.vue";
 import { mapState } from "vuex";
-import { ref } from "vue";
+import { computed } from "vue";
+import { useStore } from "vuex";
 // import Navbar from "./components/partials/navbar/Navbar.vue";
 
 export default {
@@ -33,11 +34,19 @@ export default {
   },
 
   setup() {
-    const theme = ref("light");
+    const store = useStore();
+
+    const themeMode = computed(() => store.getters["theme/themeMode"]); // Access themeMode from the module
+
+    console.log("themeMode: ", themeMode.value);
+
     function changeTheme() {
-      theme.value = theme.value === "light" ? "dark" : "light";
+      console.log("I was called!!!!!!!!!!!!!");
+      const newMode = themeMode.value === "light" ? "dark" : "light";
+      store.dispatch("theme/setThemeMode", newMode);
     }
-    return { theme, changeTheme };
+
+    return { themeMode, changeTheme };
   },
   name: "App",
   components: {
@@ -77,6 +86,9 @@ export default {
       },
       profilePictureChangeLabel() {
         return "Profile picture changed.";
+      },
+      theme() {
+        return this.$store.state.theme.themeMode;
       },
     }),
   },
@@ -148,7 +160,7 @@ export default {
 </script>
 
 <template>
-  <v-app :theme="theme">
+  <v-app :theme="this.theme">
     <v-dialog v-model="editProfilePicDialog" max-width="600">
       <v-card rounded="lg" :loading="profileIsUploading" accent="blue">
         <template v-slot:loader="{ isActive }">
@@ -169,10 +181,11 @@ export default {
                 height="200"
                 aspect-ratio="1/1"
                 class="cursor-pointer"
-                @click="$refs.avatarUpload.click()"
+                @click="this.$refs.avatarUpload.click()"
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/340px-Default_pfp.svg.png"
               >
               </v-img>
+              <!-- if the above doesn't work, then remove "this." -->
             </div>
             <div v-else-if="avatarURL">
               <v-img height="300" aspect-ratio="1/1" :src="avatarURL"></v-img>
@@ -187,9 +200,10 @@ export default {
                 @change="onAvatarChange($event)"
                 rounded="lg"
                 color="blue"
-                class="d-none"
-                :text="cursor"
+                class="cursor-pointer d-none"
               ></v-file-input>
+              <!-- If the v-file-input above doesn't have a pointer as its cursor, do the below -->
+              <!-- :text="cursor" -->
               <!-- <v-btn icon="mdi-trash-can-outline" @click="removeAvatar()" class="mt-3" variant="text"></v-btn> -->
               <v-btn :disabled="!avatarURL" prepend-icon="mdi-close-box" @click="removeAvatar()" class="mt-3" variant="text" color="red"> Clear Profile Picture</v-btn>
             </div>
@@ -238,7 +252,8 @@ export default {
                 <v-btn block variant="text" @click="editProfilePicDialog = true" rounded="lg">Edit Profile Picture</v-btn>
                 <v-divider class="my-3"></v-divider>
                 <!-- <v-btn variant="text" rounded> Toggle Theme </v-btn> -->
-                <v-btn block :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'" @click="changeTheme" variant="text" rounded="lg">Toggle Theme</v-btn>
+                <v-btn block :prepend-icon="this.themeMode === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'" @click="this.changeTheme()" variant="text" rounded="lg">Toggle Theme</v-btn>
+
                 <v-divider class="my-3"></v-divider>
                 <v-btn block variant="text" rounded="lg" @click="logout()"> Logout </v-btn>
               </div>

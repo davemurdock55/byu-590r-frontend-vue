@@ -78,7 +78,7 @@
           </v-card-item>
           <div class="py-2">
             <div class="justify-start text-center d-flex align-center">
-              <p class="text-h6 font-weight-light text-yellow-darken-2">{{ book.overall_rating }}</p>
+              <p class="text-h6 font-weight-normal text-yellow-darken-2">{{ book.overall_rating }}</p>
               <v-rating v-model="book.overall_rating" active-color="yellow-darken-2" color="yellow-darken-2" density="compact" clearable hover half-increments readonly></v-rating>
             </div>
             <v-card-text :class="{ 'text-black': $vuetify.theme.dark === false, 'text-white': $vuetify.theme.dark === true }" class="pl-0">{{ book.description }}</v-card-text>
