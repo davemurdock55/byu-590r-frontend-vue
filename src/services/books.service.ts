@@ -78,16 +78,15 @@ class BooksService {
     });
   }
 
-  //   removeReview(book) {
-  //     let formData = new FormData();
-  //
-  //     formData.append("id", book.id);
-  //
-  //     return axios.post(API_URL + "user/" + book.id + "/remove_book_from_reading_list", book.id, { headers: authHeader() }).then((response) => {
-  //       console.log(response);
-  //       return response.data.result;
-  //     });
-  //   }
+  removeReview(id) {
+    let formData = new FormData();
+
+    formData.append("id", id);
+
+    return axios.post(API_URL + "books/" + id + "/remove_review", id, { headers: authHeader() }).then((response) => {
+      return response.data.result;
+    });
+  }
 }
 
 const booksService = new BooksService();

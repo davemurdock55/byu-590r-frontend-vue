@@ -9,6 +9,7 @@ export default {
       isLoadingBooks: true,
       isAddingBookToReadingList: false,
       isAddingReview: false,
+      isRemovingReview: false,
       snackbar: false,
       snackbarColor: "",
       snackBarMessage: null,
@@ -170,7 +171,6 @@ export default {
       if (addAuthor) {
         this.newBook.author_id = addAuthor.id;
       }
-      // console.log("this.newBook: ", this.newBook);
 
       this.$store
         .dispatch("books/createBook", this.newBook)
@@ -243,7 +243,7 @@ export default {
         });
     },
     submitReview() {
-      // console.log("newReview: ", this.selectedBook.newReview);
+      this.isAddingReview = true;
 
       this.$store
         .dispatch("books/addReview", this.selectedBook)
@@ -258,6 +258,24 @@ export default {
         .catch((error) => {
           this.openSnackbar("Failed to add review. " + error.response.data.message, "red");
           this.isAddingReview = false;
+        });
+    },
+    removeReview(id) {
+      this.isRemovingReview = true;
+
+      this.$store
+        .dispatch("books/removeReview", id)
+        .then((response) => {
+          this.isRemovingReview = false;
+          this.openSnackbar("Review removed.", "red");
+          this.selectedBook = { ...response, newReview: { rating: 0, comment: "" } };
+          this.getBooks();
+          // might be response.book
+          // this.selectedBook = response;
+        })
+        .catch((error) => {
+          this.openSnackbar("Failed to remove review. " + error.response.data.message, "red");
+          this.isRemovingReview = false;
         });
     },
     closeBookDialog() {
@@ -430,7 +448,6 @@ export default {
   },
 
   created() {
-    // console.log("booksList: ", this.booksList);
     if (this.authUser) {
       this.getBooks();
     }

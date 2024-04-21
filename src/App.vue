@@ -38,10 +38,9 @@ export default {
 
     const themeMode = computed(() => store.getters["theme/themeMode"]); // Access themeMode from the module
 
-    console.log("themeMode: ", themeMode.value);
+    // console.log("themeMode: ", themeMode.value);
 
     function changeTheme() {
-      console.log("I was called!!!!!!!!!!!!!");
       const newMode = themeMode.value === "light" ? "dark" : "light";
       store.dispatch("theme/setThemeMode", newMode);
     }
@@ -101,7 +100,7 @@ export default {
   updated() {
     if (this.isAuthenticated) {
       this.$router.push({ name: "home" });
-      console.log(this.$store.state.user);
+      // console.log(this.$store.state.user);
     }
   },
   methods: {

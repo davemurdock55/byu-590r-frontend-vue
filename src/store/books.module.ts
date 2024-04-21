@@ -70,25 +70,18 @@ export const books = {
     },
 
     addReview({ commit }, reviewBook) {
-      console.log("books.module: ", reviewBook);
-      return bookService.addReview(reviewBook).then((book) => {
-        commit("setBook", book);
-        return Promise.resolve(book);
+      return bookService.addReview(reviewBook).then((response) => {
+        commit("setBook", response);
+        return Promise.resolve(response);
       });
     },
 
-    // removeReview({ commit, getters }, book) {
-    //   // saving the index BEFORE we delete the book
-    //   // var index = getters.getBookStateIndexByBookID(book.id);
-    //   return userService.removeBookFromReadingList(book).then((response) => {
-    //     // setting that saved index to the book so that the removeBook() method works properly
-    //     // response.book.index = index;
-    //     console.log("book removed user: ", response.user);
-    //     commit("setUserReadingList", response.user.reading_list);
-    //     // commit("setUser", response.user);
-    //     return Promise.resolve(response.user.reading_list);
-    //   });
-    // },
+    removeReview({ commit, getters }, id) {
+      return bookService.removeReview(id).then((response) => {
+        commit("setBook", response);
+        return Promise.resolve(response);
+      });
+    },
   },
 
   mutations: {

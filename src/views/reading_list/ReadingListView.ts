@@ -53,7 +53,6 @@ export default {
     getAllBooks() {
       this.$store.dispatch("books/getBooks").then(() => {
         this.isLoadingBooks = false;
-        // console.log(this.$store.state.books);
       });
     },
 
@@ -62,7 +61,6 @@ export default {
     },
     addBookToReadingList() {
       this.isAddingBooks = true;
-      // console.log("books to add: ", this.booksToAdd);
       this.$store
         .dispatch("user/addBookToReadingList", this.booksToAdd)
         .then(() => {
@@ -127,11 +125,10 @@ export default {
     // console.log(this.user);
   },
   mounted() {
-    // console.log(this.user.reading_list);
     if (this.user && this.user != undefined) {
       this.isLoadingBooks = true;
       this.getAllBooks();
-      console.log("got all books: ");
+      // console.log("got all books: ");
       this.isLoadingBooks = false;
     }
   },

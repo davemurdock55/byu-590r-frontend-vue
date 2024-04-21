@@ -97,7 +97,7 @@
                   <div class="flex-row mr-2 d-flex" v-if="User.user.id == review.pivot.user_id">
                     <v-card-text class="text-body-1">{{ review.pivot.comment }}</v-card-text>
                     <v-hover>
-                      <v-btn icon="mdi-trash-can" flat>
+                      <v-btn icon="mdi-trash-can" @click="removeReview(review.pivot.id)" :loading="isRemovingReview" flat>
                         <template v-slot:default>
                           <v-icon color="red" size="large">mdi-trash-can</v-icon>
                         </template>
@@ -134,9 +134,9 @@
       </v-card-text>
       <v-card-actions class="px-5 pt-2 ga-2">
         <v-spacer></v-spacer>
-        <v-btn @click="addBookToReadingList(selectedBook)" variant="flat" prepend-icon="mdi-plus" color="blue" size="large" class="px-4" :loading="isAddingBookToReadingList"
-          >Add To Reading List</v-btn
-        >
+        <v-btn @click="addBookToReadingList(selectedBook)" variant="flat" prepend-icon="mdi-plus" color="blue" size="large" class="px-4" :loading="isAddingBookToReadingList">
+          Add To Reading List
+        </v-btn>
         <!-- <v-btn @click="" variant="outlined" prepend-icon="mdi-check" color="green" size="large" class="px-4" type="submit">Added To Reading List</v-btn> -->
         <v-spacer></v-spacer>
       </v-card-actions>
