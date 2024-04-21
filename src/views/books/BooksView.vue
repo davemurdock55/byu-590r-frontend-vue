@@ -8,7 +8,7 @@
 
       <!-- Card Top Bar -->
       <v-card-title class="mb-12">
-        <v-app-bar app color="white" flat class="mt-n16" rounded="lg">
+        <v-app-bar app flat class="mt-n16" rounded="lg">
           <div class="pl-3 d-flex align-center">
             <v-icon color="grey-darken-1">mdi-book-outline</v-icon>
             <h5 class="text-body-1 text-medium-emphasis ps-2">{{ selectedBook.series }}</h5>
@@ -45,11 +45,11 @@
 
           <div
             v-if="selectedBook.cover == null || selectedBook.cover == undefined || selectedBook.cover == '' || selectedBook == null || selectedBook == undefined || selectedBook == {}"
-            class="upload_book_area pa-6"
+            class="default_book_area light pa-6"
+            style="width: 200px; height: 300px"
             @click="$refs.bookCoverUpload.click()"
           >
-            <v-text class="justify-center d-flex text-grey-lighten-1" color="grey-lighten-1">Upload Book Cover</v-text>
-            <v-icon icon="mdi-image-area" color="grey-lighten-1"></v-icon>
+            <v-icon icon="mdi-book-open-blank-variant-outline" color="grey-lighten-1" style="font-size: 80px; width: 80px; height: 80px"></v-icon>
           </div>
           <div v-else-if="selectedBook.cover" class="mb-2">
             <v-img height="300" :src="selectedBook.cover"></v-img>
@@ -99,7 +99,7 @@
                     <v-hover>
                       <v-btn icon="mdi-trash-can" @click="removeReview(review.pivot.id)" :loading="isRemovingReview" flat>
                         <template v-slot:default>
-                          <v-icon color="red" size="large">mdi-trash-can</v-icon>
+                          <v-icon color="red">mdi-trash-can</v-icon>
                         </template>
                       </v-btn>
                     </v-hover>
@@ -118,9 +118,9 @@
                   <v-icon color="yellow-darken-2">mdi-message-text-outline</v-icon>
                 </template>
                 <template #append class="ma-0">
-                  <v-btn icon="mdi-send-variant" type="submit" :loading="isAddingReview" flat>
+                  <v-btn icon="mdi-send-variant" type="submit" @click="submitReview()" :loading="isAddingReview" flat>
                     <template v-slot:default>
-                      <v-icon color="yellow-darken-2" size="large" @click="submitReview()">mdi-send-variant</v-icon>
+                      <v-icon color="yellow-darken-2" size="large">mdi-send-variant</v-icon>
                     </template>
                   </v-btn>
                   <!-- <v-icon size="large" color="yellow-darken-2">mdi-send-variant</v-icon> -->
@@ -154,7 +154,7 @@
           <div class="pl-3 d-flex align-center">
             <v-icon color="grey-darken-1">mdi-book-outline</v-icon>
             <v-responsive class="mx-auto" min-width="200">
-              <v-text-field label="Series" variant="underlined" min-width="200" v-model="selectedBook.series" color="blue"></v-text-field>
+              <v-text-field label="Series" variant="underlined" min-width="200" v-model="editingBook.series" color="blue"></v-text-field>
             </v-responsive>
           </div>
           <v-spacer></v-spacer>
@@ -332,7 +332,10 @@
       <v-hover v-for="book in booksList">
         <template v-slot:default="{ isHovering, props }">
           <v-card v-if="!isLoadingBooks" @click="openBookDialog(book)" v-bind="props" :color="isHovering ? 'blue' : undefined" variant="outlined" hover :width="240">
-            <v-img class="text-white" height="300" :src="book.cover" position="top" cover></v-img>
+            <v-img v-if="book.cover" class="text-white" height="300" :src="book.cover" position="top" cover></v-img>
+            <div v-else class="default_book_area light pa-6" style="width: 100%; height: 300px" @click="$refs.bookCoverUpload.click()">
+              <v-icon icon="mdi-book-open-blank-variant-outline" color="grey-lighten-1" style="font-size: 80px; width: 80px; height: 80px"></v-icon>
+            </div>
             <div class="justify-center pt-2 text-center d-flex align-center">
               <p class="text-h6 font-weight-normal text-yellow-darken-2">{{ book.overall_rating }}</p>
               <v-rating v-model="book.overall_rating" active-color="yellow-darken-2" color="yellow-darken-2" density="compact" readonly hover half-increments></v-rating>

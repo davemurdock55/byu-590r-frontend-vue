@@ -71,7 +71,10 @@
     <v-hover v-if="reading_list && reading_list.books" v-for="book in reading_list.books">
       <template v-slot:default="{ isHovering, props }">
         <v-card :key="book.id" width="800" class="my-2 d-flex align-center" variant="outlined" v-bind="props" :color="isHovering ? 'blue' : undefined" :elevation="isHovering ? 6 : 0" hover>
-          <img :src="book.cover" class="h-full" style="max-width: 150px;" cover></img>
+          <img v-if="book.cover" :src="book.cover" class="h-full" style="max-width: 150px;" cover></img>
+          <div v-else class="default_book_area light pa-6" style="width: 150px; height: 100%; min-height: 215px;" @click="$refs.bookCoverUpload.click()">
+              <v-icon icon="mdi-book-open-blank-variant-outline" color="grey-lighten-1" style="font-size: 80px; width: 80px; height: 80px"></v-icon>
+            </div>
           <!-- <v-img :src="book.cover" min-width="135" class="h-full" cover></v-img> -->
           <v-card-item :class="{ 'text-blue': isHovering, 'text-black': !isHovering && $vuetify.theme.dark === false, 'text-white': !isHovering && $vuetify.theme.dark === true }">
             <v-card-title>{{ book.title }}</v-card-title>

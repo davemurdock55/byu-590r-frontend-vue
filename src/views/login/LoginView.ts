@@ -72,7 +72,7 @@ export default {
         (response) => {
           this.alertType = "success";
           this.alertMessage = "Login Successful.";
-          this.router.push({ name: "home" });
+          // this.router.push({ name: "home", replace: true });
           window.location.reload();
           this.isLoading = false;
         },

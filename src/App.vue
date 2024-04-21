@@ -251,7 +251,7 @@ export default {
                 <v-btn block variant="text" @click="editProfilePicDialog = true" rounded="lg">Edit Profile Picture</v-btn>
                 <v-divider class="my-3"></v-divider>
                 <!-- <v-btn variant="text" rounded> Toggle Theme </v-btn> -->
-                <v-btn block :prepend-icon="this.themeMode === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'" @click="this.changeTheme()" variant="text" rounded="lg">Toggle Theme</v-btn>
+                <v-btn block :prepend-icon="this.themeMode === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'" @click="this.changeTheme()" variant="text" rounded="lg"> Toggle Theme </v-btn>
 
                 <v-divider class="my-3"></v-divider>
                 <v-btn block variant="text" rounded="lg" @click="logout()"> Logout </v-btn>

@@ -86,15 +86,6 @@ export default {
         return "";
       },
 
-      getInitials(full_name) {
-        const nameArray = full_name.split(" ");
-        const firstInitial = nameArray[0][0]; // Get the first initial
-        const lastInitial = nameArray.length > 1 ? nameArray[nameArray.length - 1][0] : ""; // Get the last initial (if there is more than one word)
-        const result = firstInitial + lastInitial;
-
-        return result;
-      },
-
       themeState() {
         return inject("themeState") as { theme: string; changeTheme: () => void };
       },
@@ -119,6 +110,15 @@ export default {
       this.$store.dispatch("books/getAllAuthors").then(() => {
         this.isLoadingBooks = false;
       });
+    },
+
+    getInitials(full_name) {
+      const nameArray = full_name.split(" ");
+      const firstInitial = nameArray[0][0]; // Get the first initial
+      const lastInitial = nameArray.length > 1 ? nameArray[nameArray.length - 1][0] : ""; // Get the last initial (if there is more than one word)
+      const result = firstInitial + lastInitial;
+
+      return result;
     },
 
     openAddDialog() {
@@ -390,8 +390,9 @@ export default {
         .dispatch("books/updateBook", this.editingBook)
         .then((response) => {
           // Adding the returned (updated) book (which is response) as the selectedBook
-          this.selectedBook = { newReview: { rating: 0, comment: "" } };
+          this.selectedBook = { ...response, newReview: { rating: 0, comment: "" } };
           this.closeEditDialog();
+          this.openBookDialog(response);
           this.editingBook = {}; // Reset editingBook after successful update
           this.openSnackbar("Edits Saved", "success");
           this.editBookDialogIsLoading = false;
@@ -423,6 +424,7 @@ export default {
           this.openSnackbar("Book Deleted", "red");
           this.deleteBookDialogIsLoading = false;
           this.selectedDeleteBook = false;
+          this.$store.dispatch("user/getUser");
         })
         .catch((error) => {
           this.openSnackbar("Deleting failed. " + error.response.data.message, "red");
