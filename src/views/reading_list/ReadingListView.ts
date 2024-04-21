@@ -62,7 +62,7 @@ export default {
     },
     addBookToReadingList() {
       this.isAddingBooks = true;
-      console.log("books to add: ", this.booksToAdd);
+      // console.log("books to add: ", this.booksToAdd);
       this.$store
         .dispatch("user/addBookToReadingList", this.booksToAdd)
         .then(() => {

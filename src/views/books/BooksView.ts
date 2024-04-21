@@ -8,6 +8,7 @@ export default {
     return {
       isLoadingBooks: true,
       isAddingBookToReadingList: false,
+      isAddingReview: false,
       snackbar: false,
       snackbarColor: "",
       snackBarMessage: null,
@@ -69,11 +70,11 @@ export default {
       //   return this.$store.state.books.book;
       // },
       User() {
-        console.log(this.$store.state.user);
+        // console.log(this.$store.state.user);
         return this.$store.state.user;
       },
       authUser() {
-        console.log(this.$store.state.user);
+        // console.log(this.$store.state.user);
         return this.$store.state.auth.user;
       },
       formattedDate() {
@@ -169,7 +170,7 @@ export default {
       if (addAuthor) {
         this.newBook.author_id = addAuthor.id;
       }
-      console.log("this.newBook: ", this.newBook);
+      // console.log("this.newBook: ", this.newBook);
 
       this.$store
         .dispatch("books/createBook", this.newBook)
@@ -223,13 +224,13 @@ export default {
     openBookDialog(book) {
       this.viewBookDialog = true;
       this.selectedBook = book;
+      this.selectedBook = { ...book, newReview: { rating: 0, comment: "" } }; // Add userRating field with value 0
     },
     addBookToReadingList(selectedBook) {
       this.isAddingBookToReadingList = true;
 
       var BooksToAddArray = [selectedBook];
 
-      console.log("books to add: ", BooksToAddArray);
       this.$store
         .dispatch("user/addBookToReadingList", BooksToAddArray)
         .then(() => {
@@ -241,8 +242,26 @@ export default {
           this.isAddingBookToReadingList = false;
         });
     },
+    submitReview() {
+      // console.log("newReview: ", this.selectedBook.newReview);
+
+      this.$store
+        .dispatch("books/addReview", this.selectedBook)
+        .then((response) => {
+          this.isAddingReview = false;
+          this.openSnackbar("Review submitted.", "success");
+          this.selectedBook = { ...response, newReview: { rating: 0, comment: "" } };
+          this.getBooks();
+          // might be response.book
+          // this.selectedBook = response;
+        })
+        .catch((error) => {
+          this.openSnackbar("Failed to add review. " + error.response.data.message, "red");
+          this.isAddingReview = false;
+        });
+    },
     closeBookDialog() {
-      this.selectedBook = {};
+      this.selectedBook = { newReview: { rating: 0, comment: "" } };
       this.showReviews = "";
       this.viewBookDialog = false;
     },
@@ -276,8 +295,9 @@ export default {
       this.$store
         .dispatch("books/updateBookCover", this.editingBook)
         .then((response) => {
-          this.editingBook = response; // Update the editingBook object with the new cover data
-          this.selectedBook = response; // Update the selectedBook object with the new cover data
+          this.editingBook = response;
+          this.selectedBook = { ...this.editingBoook, newReview: { rating: 0, comment: "" } };
+          this.editingBook = { ...this.editingBook, author_name: this.editingBook.author ? this.editingBook.author.name : "" };
           this.openSnackbar("Cover Updated", "success");
           this.viewBookDialogIsLoading = false;
           this.editBookDialogIsLoading = false;
@@ -312,9 +332,14 @@ export default {
 
       this.$store
         .dispatch("books/removeBookCover", this.editingBook)
-        .then(() => {
+        .then((response) => {
+          this.editingBook = response;
+          this.selectedBook = { ...this.editingBoook, newReview: { rating: 0, comment: "" } };
+          this.editingBook = { ...this.editingBook, author_name: this.editingBook.author ? this.editingBook.author.name : "" };
+          this.openSnackbar("Cover removed.", "red");
           this.viewBookDialogIsLoading = false;
           this.editBookDialogIsLoading = false;
+          this.getBooks();
         })
         .catch((error) => {
           console.log(error);
@@ -346,8 +371,8 @@ export default {
       this.$store
         .dispatch("books/updateBook", this.editingBook)
         .then((response) => {
-          // Adding the returned (uprdated) book (which is response) as the selectedBook
-          this.selectedBook = response;
+          // Adding the returned (updated) book (which is response) as the selectedBook
+          this.selectedBook = { newReview: { rating: 0, comment: "" } };
           this.closeEditDialog();
           this.editingBook = {}; // Reset editingBook after successful update
           this.openSnackbar("Edits Saved", "success");
@@ -359,9 +384,10 @@ export default {
         });
     },
     closeEditDialog() {
-      this.editingBook = {};
       this.editBookDialog = false;
-      this.viewBookDialog = true;
+      this.openBookDialog(this.editingBook);
+      this.editingBook = {};
+      // this.viewBookDialog = true;
     },
 
     openDeleteDialog(book) {
@@ -414,6 +440,7 @@ export default {
   },
   updated() {
     if (this.authUser) {
+      // this.getBooks();
       // console.log("BooksView updated(): ", this.booksList);
     }
   },

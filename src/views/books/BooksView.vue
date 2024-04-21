@@ -7,7 +7,7 @@
       </template>
 
       <!-- Card Top Bar -->
-      <v-card-title class="mb-10">
+      <v-card-title class="mb-12">
         <v-app-bar app color="white" flat class="mt-n16" rounded="lg">
           <div class="pl-3 d-flex align-center">
             <v-icon color="grey-darken-1">mdi-book-outline</v-icon>
@@ -90,8 +90,8 @@
                   </template>
                   <template v-slot:append class="pa-0">
                     <div class="justify-start d-flex align-center mt-n6">
-                      <p class="font-weight-medium text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
-                      <v-rating v-model="selectedBook.overall_rating" color="yellow-darken-2" density="comfortable" half-increments readonly></v-rating>
+                      <p class="font-weight-medium text-h6 font-weight-light text-yellow-darken-2">{{ review.pivot.rating }}</p>
+                      <v-rating v-model="review.pivot.rating" color="yellow-darken-2" density="comfortable" half-increments readonly></v-rating>
                     </div>
                   </template>
                   <div class="flex-row mr-2 d-flex" v-if="User.user.id == review.pivot.user_id">
@@ -109,23 +109,24 @@
               </div>
 
               <div class="justify-start mt-3 mb-1 d-flex align-center">
-                <p class="font-weight-medium text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.overall_rating }}</p>
-                <v-rating v-model="selectedBook.overall_rating" active-color="yellow-darken-2" color="yellow-darken-2" density="comfortable" clearable hover half-increments> </v-rating>
+                <p class="font-weight-medium text-h6 font-weight-light text-yellow-darken-2">{{ selectedBook.newReview.rating }}</p>
+                <v-rating v-model="selectedBook.newReview.rating" active-color="yellow-darken-2" color="yellow-darken-2" density="comfortable" clearable hover half-increments> </v-rating>
               </div>
 
-              <v-textarea label="Leave a Review" row-height="15" rows="1" variant="outlined" color="yellow-darken-2" auto-grow>
+              <v-textarea v-model="selectedBook.newReview.comment" label="Leave a Review" :loading="isAddingReview" row-height="15" rows="1" variant="outlined" color="yellow-darken-2" auto-grow>
                 <template #prepend-inner>
                   <v-icon color="yellow-darken-2">mdi-message-text-outline</v-icon>
                 </template>
                 <template #append class="ma-0">
-                  <v-btn icon="mdi-send-variant" flat>
+                  <v-btn icon="mdi-send-variant" type="submit" :loading="isAddingReview" flat>
                     <template v-slot:default>
-                      <v-icon color="yellow-darken-2" size="large">mdi-send-variant</v-icon>
+                      <v-icon color="yellow-darken-2" size="large" @click="submitReview()">mdi-send-variant</v-icon>
                     </template>
                   </v-btn>
                   <!-- <v-icon size="large" color="yellow-darken-2">mdi-send-variant</v-icon> -->
                 </template>
               </v-textarea>
+
               <!-- <v-btn type="submit" variant="flat" color="yellow-darken-2" class="text-white">Send</v-btn> -->
             </v-expansion-panel-text>
           </v-expansion-panel>
@@ -178,7 +179,7 @@
             <!-- <v-skeleton-loader v-if="editBookDialogIsLoading || viewBookDialogIsLoading" type="card"></v-skeleton-loader> -->
             <div
               v-if="editingBook.cover == null || editingBook.cover == undefined || editingBook.cover == '' || editingBook == null || editingBook == undefined || editingBook == {}"
-              class="upload_book_area pa-6"
+              class="cursor-pointer upload_book_area pa-6"
               style="cursor: pointer"
               @click="$refs.bookEditCoverUpload.click()"
               :loading="editBookDialogIsLoading || viewBookDialogIsLoading"
@@ -256,7 +257,7 @@
               <v-img height="300" :src="newBook.cover_display"></v-img>
             </div>
 
-            <div v-else class="upload_book_area pa-6" @click="$refs.bookCoverUpload.click()">
+            <div v-else class="cursor-pointer upload_book_area pa-6" style="cursor: pointer" @click="$refs.bookCoverUpload.click()">
               <v-text class="justify-center d-flex text-grey-lighten-1" color="grey-lighten-1">Upload Book Cover</v-text>
               <v-icon icon="mdi-image-area" color="grey-lighten-1" size="x-large"></v-icon>
             </div>

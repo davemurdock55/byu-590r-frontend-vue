@@ -59,9 +59,9 @@ export const user = {
       );
     },
     addBookToReadingList({ commit }, books_to_add) {
-      console.log("module 'books_to_add': ", books_to_add);
+      // console.log("module 'books_to_add': ", books_to_add);
       return userService.addBookToReadingList(books_to_add).then((response) => {
-        console.log("book added user: ", response.user);
+        // console.log("book added user: ", response.user);
         commit("setUserReadingList", response.user.reading_list);
         // commit("setUser", response.user);
         // for a bit it was "setUser" -- not sure if that was correct...
