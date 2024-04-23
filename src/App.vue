@@ -280,24 +280,3 @@ export default {
     </v-main>
   </v-app>
 </template>
-
-<style scoped>
-.navbar-container {
-  display: flex;
-  /* flex-wrap: nowrap; */
-
-  /* overflow-x: hidden; */
-}
-
-/* Adjustments for mobile screens */
-@media (max-width: 600px) {
-  /* .navbar-container {
-    padding-left: 0px;
-    padding-right: 0px;
-    width: 100% !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 0px !important;
-  } */
-}
-</style>
