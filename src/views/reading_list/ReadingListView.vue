@@ -70,8 +70,8 @@
     <!-- Reading List Items -->
     <v-hover v-if="reading_list && reading_list.books" v-for="book in reading_list.books">
       <template v-slot:default="{ isHovering, props }">
-        <v-card :key="book.id" width="800" class="my-2 d-flex align-center" variant="outlined" v-bind="props" :color="isHovering ? 'blue' : undefined" :elevation="isHovering ? 6 : 0" hover>
-          <img v-if="book.cover" :src="book.cover" class="h-full" style="max-width: 150px;" cover></img>
+        <v-card :key="book.id"  class="my-2 d-flex align-center responsive-width responsive-direction" variant="outlined" v-bind="props" :color="isHovering ? 'blue' : undefined" :elevation="isHovering ? 6 : 0" hover>
+          <img v-if="book.cover" :src="book.cover" class="h-full responsive-img-padding" style="max-width: 150px;" cover></img>
           <div v-else class="default_book_area light pa-6" style="width: 150px; height: 100%; min-height: 215px;" @click="$refs.bookCoverUpload.click()">
               <v-icon icon="mdi-book-open-blank-variant-outline" color="grey-lighten-1" style="font-size: 80px; width: 80px; height: 80px"></v-icon>
             </div>
@@ -80,13 +80,13 @@
             <v-card-title>{{ book.title }}</v-card-title>
             <v-card-subtitle>{{ book.author.name }}</v-card-subtitle>
           </v-card-item>
-          <div class="py-2">
-            <div class="justify-start text-center d-flex align-center">
+          <div class="py-2 responsive-alignment">
+            <div class="justify-start text-center d-flex align-center responsive-alignment">
               <p class="text-h6 font-weight-normal text-yellow-darken-2">{{ book.overall_rating }}</p>
               <v-rating v-model="book.overall_rating" active-color="yellow-darken-2" color="yellow-darken-2" density="compact" clearable hover half-increments readonly></v-rating>
             </div>
-            <v-card-text :class="{ 'text-black': $vuetify.theme.dark === false, 'text-white': $vuetify.theme.dark === true }" class="pl-0">{{ book.description }}</v-card-text>
-            <div class="flex-row d-flex ga-5">
+            <v-card-text :class="{ 'text-black': $vuetify.theme.dark === false, 'text-white': $vuetify.theme.dark === true }" class="pl-0 responsive-padding">{{ book.description }}</v-card-text>
+            <div class="flex-row d-flex ga-5 responsive-alignment">
               <v-btn prepend-icon="mdi-book-check-outline" color="success" variant="outlined" @click="removeBookFromReadingList(book, 'Congratulations on finishing the book!!', 'success')"
                 >Finished</v-btn
               >
@@ -113,3 +113,33 @@
 
 <script src="./ReadingListView.ts" />
 <style src="./ReadingListView.scss" />
+
+
+<style scoped>
+.responsive-width {
+  width: 800px;
+}
+
+
+@media (max-width: 600px) {
+  .responsive-width {
+    width: 100% !important;
+  }
+
+  .responsive-direction {
+    flex-direction: column !important;
+  }
+
+  .responsive-alignment {
+    justify-content: center !important;
+  }
+
+  .responsive-padding {
+    padding: 10% !important;
+  }
+
+  .responsive-img-padding {
+    padding-top: 10px;
+  }
+}
+</style>

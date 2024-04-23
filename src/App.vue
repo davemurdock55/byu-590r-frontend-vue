@@ -86,6 +86,14 @@ export default {
       profilePictureChangeLabel() {
         return "Profile picture changed.";
       },
+      isDesktop() {
+        // Check if the viewport width is greater than 600px
+        return window.innerWidth > 600;
+      },
+      pageTitle() {
+        // Only show the title on desktop screens (width > 600px)
+        return this.isDesktop ? `Welcome ${this.authUser.name}!` : "";
+      },
       theme() {
         return this.$store.state.theme.themeMode;
       },
@@ -215,7 +223,7 @@ export default {
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-app-bar :title="authUser.name === undefined ? '' : title" v-if="isAuthenticated" class="text-blue ga-3" gap="3">
+    <v-app-bar :title="pageTitle" v-if="isAuthenticated" class="text-blue ga-3 navbar-container">
       <v-spacer></v-spacer>
       <div class="flex-row d-flex ga-3 align-center pa-4">
         <v-btn to="/" flat color="blue" class="font-weight-medium" :ripple="false" default>Home</v-btn>
@@ -223,7 +231,7 @@ export default {
         <v-btn to="reading_list" flat class="font-weight-medium" :ripple="false">My Booklist</v-btn>
         <!-- <v-btn to="about" flat class="font-weight-medium" :ripple="false">About</v-btn> -->
 
-        <v-menu open-on-hover min-width="200px" rounded>
+        <v-menu open-on-click min-width="200px" rounded>
           <template v-slot:activator="{ props }">
             <v-btn icon v-bind="props">
               <v-avatar color="info" :loading="profileIsUploading">
@@ -272,3 +280,24 @@ export default {
     </v-main>
   </v-app>
 </template>
+
+<style scoped>
+.navbar-container {
+  display: flex;
+  /* flex-wrap: nowrap; */
+
+  /* overflow-x: hidden; */
+}
+
+/* Adjustments for mobile screens */
+@media (max-width: 600px) {
+  /* .navbar-container {
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 100% !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0px !important;
+  } */
+}
+</style>

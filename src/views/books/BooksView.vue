@@ -317,10 +317,10 @@
   </v-dialog>
 
   <!-- Title Area -->
-  <div class="text-center pa-10">
+  <div class="px-10 pt-10 text-center">
     <h1 class="text-h3 text-blue">Our Collection</h1>
     <h6 class="text-h6">Here are some books recommended just for you!</h6>
-    <div class="justify-end d-flex">
+    <div class="justify-end my-3 d-flex mobile-styles">
       <v-btn @click="openAddDialog()" variant="flat" prepend-icon="mdi-plus" color="blue" size="large" type="submit">Add Book</v-btn>
     </div>
     <v-progress-linear v-if="isLoadingBooks" color="blue" class="mt-12" width="200" indeterminate></v-progress-linear>
@@ -328,7 +328,7 @@
 
   <!-- Book List -->
   <v-sheet class="justify-center d-flex flex-column align-center">
-    <v-sheet class="flex-wrap px-10 py-5 d-flex ga-10">
+    <v-sheet class="flex-wrap px-10 py-5 d-flex ga-10 mobile-styles">
       <v-hover v-for="book in booksList">
         <template v-slot:default="{ isHovering, props }">
           <v-card v-if="!isLoadingBooks" @click="openBookDialog(book)" v-bind="props" :color="isHovering ? 'blue' : undefined" variant="outlined" hover :width="240">
@@ -367,3 +367,11 @@
 
 <script src="./BooksView.ts" />
 <style src="./BooksView.scss" />
+
+<style scoped>
+@media (max-width: 600px) {
+  .mobile-styles {
+    justify-content: center !important;
+  }
+}
+</style>
