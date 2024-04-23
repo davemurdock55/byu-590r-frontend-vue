@@ -1,1 +1,48 @@
-@use '@/assets/styles/ui.scss';
+@use "@/assets/styles/ui.scss";
+
+.login-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: ui.$colors-primary;
+}
+
+.login-form-container {
+  background-color: ui.$colors-ui-white;
+  border-radius: 10px;
+  min-width: 405px;
+  padding: 20px;
+}
+
+.inside-form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.inside-form-container h2 {
+  padding-bottom: 25px;
+}
+
+.form-inputs {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  padding-bottom: 5px;
+}
+
+.login-header {
+  text-align: center;
+  color: ui.$colors-primary;
+}
+
+.login-form-button-group {
+  display: flex;
+  flex-direction: row;
+  column-gap: 15px;
+}
+
+small {
+  display: block;
+  margin-bottom: 15px;
+}
